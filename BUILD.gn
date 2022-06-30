@@ -3091,6 +3091,8 @@ skiasharp_build("SkiaSharp") {
     // placed here to help seperate in PR
     "src/xamarin/sk_managed_png_chunk_reader.cpp",
     "src/xamarin/sk_compatpaint.cpp",
+    "src/xamarin/sk_managed_id_change_listener.cpp",
+    "src/xamarin/sk_managed_id_change_listener_list.cpp",
     "src/xamarin/sk_manageddrawable.cpp",
     "src/xamarin/sk_managedallocator.cpp",
     "src/xamarin/sk_managed_pixel_ref.cpp",
@@ -3101,6 +3103,8 @@ skiasharp_build("SkiaSharp") {
     // placed here to help seperate in PR
     "src/xamarin/SkManaged_Png_Chunk_Reader.cpp",
     "src/xamarin/SkCompatPaint.cpp",
+    "src/xamarin/SkManaged_ID_Change_Listener.cpp",
+    "src/xamarin/SkManaged_ID_Change_Listener_List.cpp",
     "src/xamarin/SkManagedDrawable.cpp",
     "src/xamarin/SkManagedAllocator.cpp",
     "src/xamarin/SkManagedPixelRef.cpp",

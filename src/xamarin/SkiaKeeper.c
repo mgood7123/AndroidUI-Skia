@@ -59,6 +59,8 @@
 #include "include/xamarin/sk_managedallocator.h"
 #include "include/xamarin/sk_managed_pixel_ref.h"
 #include "include/xamarin/sk_managedtracememorydump.h"
+#include "include/xamarin/sk_managed_id_change_listener.h"
+#include "include/xamarin/sk_managed_id_change_listener_list.h"
 #include "include/xamarin/sk_compatpaint.h"
 
 SK_X_API void** KeepSkiaCSymbols (void);
@@ -125,6 +127,8 @@ void** KeepSkiaCSymbols (void)
         (void*)sk_managed_pixel_ref_new,
         (void*)sk_managed_pixel_ref_new_from_existing,
         (void*)sk_managedtracememorydump_new,
+        (void*)sk_managed_id_change_listener_new,
+        (void*)sk_managed_id_change_listener_list_new,
     };
     return ret;
 }
