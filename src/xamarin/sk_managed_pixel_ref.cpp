@@ -76,9 +76,9 @@ bool sk_managed_pixel_ref_is_immutable(sk_pixel_ref_t* d) {
 void sk_managed_pixel_ref_set_immutable(sk_pixel_ref_t* d) {
     AsSkManagedPixelRef(d)->pixelRef->setImmutable();
 }
-//void sk_managed_pixel_ref_add_generation_id_listener(sk_pixel_ref_t* d, sk_id_change_listener_t* listener) {
-//    AsSkManagedPixelRef(d)->pixelRef->addGenIDChangeListener(sk_ref_sp(AsSkManaged_ID_Change_Listener(listener)));
-//}
+void sk_managed_pixel_ref_add_generation_id_listener(sk_pixel_ref_t* d, sk_id_change_listener_t* listener) {
+    AsSkManagedPixelRef(d)->pixelRef->addGenIDChangeListener(sk_ref_sp(AsSkManaged_ID_Change_Listener(listener)));
+}
 void sk_managed_pixel_ref_notify_added_to_cache(sk_pixel_ref_t* d) {
     AsSkManagedPixelRef(d)->pixelRef->notifyAddedToCache();
 }
