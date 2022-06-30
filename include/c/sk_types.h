@@ -346,6 +346,8 @@ typedef struct sk_bitmap_t sk_bitmap_t;
 typedef struct sk_pixmap_t sk_pixmap_t;
 // placed here to help seperate in PR
 typedef struct sk_png_chunk_reader_t sk_png_chunk_reader_t;
+// placed here to help seperate in PR
+typedef struct sk_pixel_ref_t sk_pixel_ref_t;
 typedef struct sk_colorfilter_t sk_colorfilter_t;
 typedef struct sk_imagefilter_t sk_imagefilter_t;
 typedef struct sk_imagefilter_croprect_t sk_imagefilter_croprect_t;
