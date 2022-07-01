@@ -17,12 +17,21 @@ size_t sk_codec_min_buffered_bytes_needed(void) {
     return SkCodec::MinBufferedBytesNeeded();
 }
 
-sk_codec_t* sk_codec_new_from_stream(sk_stream_t* stream, sk_codec_result_t* result, sk_png_chunk_reader_t* chunk_reader, sk_codec_selection_policy_t policy) {
+sk_codec_t* sk_codec_new_from_stream(sk_stream_t* stream, sk_codec_result_t* result) {
+    std::unique_ptr<SkStream> skstream(AsStream(stream));
+    return ToCodec(SkCodec::MakeFromStream(std::move(skstream), (SkCodec::Result*)result).release());
+}
+
+sk_codec_t* sk_codec_new_from_data(sk_data_t* data) {
+    return ToCodec(SkCodec::MakeFromData(sk_ref_sp(AsData(data))).release());
+}
+
+sk_codec_t* sk_codec_new_from_stream_with_png_chunk_reader_and_selection_policy(sk_stream_t* stream, sk_codec_result_t* result, sk_png_chunk_reader_t* chunk_reader, sk_codec_selection_policy_t policy) {
     std::unique_ptr<SkStream> skstream(AsStream(stream));
     return ToCodec(SkCodec::MakeFromStream(std::move(skstream), (SkCodec::Result*)result, AsPngChunkReader(chunk_reader), (SkCodec::SelectionPolicy)policy).release());
 }
 
-sk_codec_t* sk_codec_new_from_data(sk_data_t* data, sk_png_chunk_reader_t* chunk_reader) {
+sk_codec_t* sk_codec_new_from_data_with_png_chunk_reader(sk_data_t* data, sk_png_chunk_reader_t* chunk_reader) {
     return ToCodec(SkCodec::MakeFromData(sk_ref_sp(AsData(data)), AsPngChunkReader(chunk_reader)).release());
 }
 
@@ -40,10 +49,6 @@ sk_encodedorigin_t sk_codec_get_origin(sk_codec_t* codec) {
 
 void sk_codec_get_scaled_dimensions(sk_codec_t* codec, float desiredScale, sk_isize_t* dimensions) {
     *dimensions = ToISize(AsCodec(codec)->getScaledDimensions(desiredScale));
-}
-
-void sk_codec_get_dimensions(sk_codec_t* codec, sk_isize_t* dimensions) {
-    *dimensions = ToISize(AsCodec(codec)->dimensions());
 }
 
 bool sk_codec_get_valid_subset(sk_codec_t* codec, sk_irect_t* desiredSubset) {
