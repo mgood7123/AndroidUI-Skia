@@ -3088,7 +3088,7 @@ skiasharp_build("SkiaSharp") {
   ]
 
   sources = [
-    "src/xamarin/sk_managed_png_chunk_reader.cpp",
+    "src/xamarin/sk_managedpngchunkreader.cpp",
     "src/xamarin/sk_compatpaint.cpp",
     "src/xamarin/sk_managed_id_change_listener.cpp",
     "src/xamarin/sk_managed_id_change_listener_list.cpp",
@@ -3099,7 +3099,7 @@ skiasharp_build("SkiaSharp") {
     "src/xamarin/sk_managedtracememorydump.cpp",
     "src/xamarin/sk_xamarin.cpp",
     "src/xamarin/SkiaKeeper.c",
-    "src/xamarin/SkManaged_Png_Chunk_Reader.cpp",
+    "src/xamarin/SkManagedPngChunkReader.cpp",
     "src/xamarin/SkCompatPaint.cpp",
     "src/xamarin/SkManaged_ID_Change_Listener.cpp",
     "src/xamarin/SkManaged_ID_Change_Listener_List.cpp",
