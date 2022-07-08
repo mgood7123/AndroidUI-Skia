@@ -381,9 +381,7 @@ typedef struct sk_string_t sk_string_t;
 typedef struct sk_bitmap_t sk_bitmap_t;
 typedef struct sk_bitmapallocator_t sk_bitmapallocator_t;
 typedef struct sk_pixmap_t sk_pixmap_t;
-typedef struct sk_png_chunk_reader_t sk_png_chunk_reader_t;
-// placed here to help seperate in PR
-typedef struct sk_pixelref_t sk_pixelref_t;
+typedef struct sk_pngchunkreader_t sk_pngchunkreader_t;
 typedef struct sk_colorfilter_t sk_colorfilter_t;
 // placed here to help seperate in PR
 typedef struct sk_pixelref_t sk_pixelref_t;
@@ -523,8 +521,8 @@ typedef enum {
  *  Enum describing selection policy.
  */
 typedef enum {
-    kPreferStillImage,
-    kPreferAnimation,
+    PREFER_STILL_IMAGE_SK_CODEC_SELECTION_POLICY,
+    PREFER_ANIMATION_SK_CODEC_SELECTION_POLICY,
 } sk_codec_selection_policy_t;
 
 typedef enum {
