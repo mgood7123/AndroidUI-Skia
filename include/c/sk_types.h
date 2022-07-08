@@ -352,8 +352,8 @@ typedef struct sk_colorfilter_t sk_colorfilter_t;
 typedef struct sk_imagefilter_t sk_imagefilter_t;
 typedef struct sk_imagefilter_croprect_t sk_imagefilter_croprect_t;
 
-typedef struct sk_id_change_listener_t sk_id_change_listener_t;
-typedef struct sk_id_change_listener_list_t sk_id_change_listener_list_t;
+typedef struct sk_idchangelistener_t sk_idchangelistener_t;
+typedef struct sk_idchangelistenerlist_t sk_idchangelistenerlist_t;
 
 /**
    A sk_typeface_t pecifies the typeface and intrinsic style of a font.
