@@ -3100,7 +3100,7 @@ skiasharp_build("SkiaSharp") {
     "src/xamarin/SkiaKeeper.c",
     "src/xamarin/SkCompatPaint.cpp",
     "src/xamarin/SkManagedIDChangeListener.cpp",
-    "src/xamarin/SkManagedIDChangeListener_List.cpp",
+    "src/xamarin/SkManagedIDChangeListenerList.cpp",
     "src/xamarin/SkManagedDrawable.cpp",
     "src/xamarin/SkManagedAllocator.cpp",
     "src/xamarin/SkManagedPixelRef.cpp",
