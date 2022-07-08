@@ -5,28 +5,28 @@
  * found in the LICENSE file.
  */
 
-#ifndef SkManaged_ID_Change_Listener_h
-#define SkManaged_ID_Change_Listener_h
+#ifndef SkManagedIDChangeListener_h
+#define SkManagedIDChangeListener_h
 
 #include "include/private/SkIDChangeListener.h"
 #include "include/core/SkTypes.h"
 
 class SkIDChangeListener;
 
-class SK_API SkManaged_ID_Change_Listener;
+class SK_API SkManagedIDChangeListener;
 
 // delegate declarations
 
 // managed Allocator
-class SkManaged_ID_Change_Listener : public SkIDChangeListener {
+class SkManagedIDChangeListener : public SkIDChangeListener {
 public:
-    SkManaged_ID_Change_Listener(void* context);
+    SkManagedIDChangeListener(void* context);
 
-    ~SkManaged_ID_Change_Listener() override;
+    ~SkManagedIDChangeListener() override;
 
 public:
-    typedef void       (*ChangedProc)              (SkManaged_ID_Change_Listener* d, void* context);
-    typedef void       (*DestroyProc)              (SkManaged_ID_Change_Listener* d, void* context);
+    typedef void       (*ChangedProc)              (SkManagedIDChangeListener* d, void* context);
+    typedef void       (*DestroyProc)              (SkManagedIDChangeListener* d, void* context);
 
     struct Procs {
         ChangedProc fChanged = nullptr;

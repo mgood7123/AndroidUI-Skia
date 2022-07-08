@@ -186,8 +186,8 @@ DEF_MAP(SkRuntimeEffect::Uniform, sk_runtimeeffect_uniform_t, RuntimeEffectUnifo
 
 
 #include "include/private/SkIDChangeListener.h"
-DEF_CLASS_MAP(SkIDChangeListener, sk_id_change_listener_t, SKIDChangeListener)
-DEF_MAP(SkIDChangeListener::List, sk_id_change_listener_list_t, SKIDChangeListenerList)
+DEF_CLASS_MAP(SkIDChangeListener, sk_idchangelistener_t, SKIDChangeListener)
+DEF_MAP(SkIDChangeListener::List, sk_idchangelistenerlist_t, SKIDChangeListenerList)
 
 #include "include/core/SkCanvas.h"
 DEF_MAP(SkCanvas::Lattice, sk_lattice_t, Lattice)

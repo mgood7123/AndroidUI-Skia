@@ -5,24 +5,24 @@
  * found in the LICENSE file.
  */
 
-#ifndef SkManaged_ID_Change_Listener_List_h
-#define SkManaged_ID_Change_Listener_List_h
+#ifndef SkManagedIDChangeListener_List_h
+#define SkManagedIDChangeListener_List_h
 
 #include "include/private/SkIDChangeListener.h"
 #include "include/core/SkTypes.h"
 
-class SK_API SkManaged_ID_Change_Listener_List;
+class SK_API SkManagedIDChangeListener_List;
 
 // delegate declarations
 
 // managed Allocator
-class SkManaged_ID_Change_Listener_List : public SkIDChangeListener::List {
+class SkManagedIDChangeListener_List : public SkIDChangeListener::List {
 public:
-    SkManaged_ID_Change_Listener_List(void* context);
+    SkManagedIDChangeListener_List(void* context);
 
-    ~SkManaged_ID_Change_Listener_List();
+    ~SkManagedIDChangeListener_List();
 
-    typedef void (*DestroyProc)(SkManaged_ID_Change_Listener_List* d, void* context);
+    typedef void (*DestroyProc)(SkManagedIDChangeListener_List* d, void* context);
 
     struct Procs {
         DestroyProc fDestroy = nullptr;

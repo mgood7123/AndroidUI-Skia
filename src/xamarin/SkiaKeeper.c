@@ -52,17 +52,13 @@
 
 // Xamarin
 #include "include/xamarin/sk_managedstream.h"
-// placed here to help seperate in PR
+#include "include/xamarin/sk_manageddrawable.h"
+#include "include/xamarin/sk_managedpngchunkreader.h"
 #include "include/xamarin/sk_managedallocator.h"
 #include "include/xamarin/sk_managedpixelref.h"
-#include "include/xamarin/sk_manageddrawable.h"
-#include "include/xamarin/sk_managed_png_chunk_reader.h"
-// placed here to help seperate in PR
-#include "include/xamarin/sk_managedallocator.h"
-#include "include/xamarin/sk_managed_pixel_ref.h"
 #include "include/xamarin/sk_managedtracememorydump.h"
-#include "include/xamarin/sk_managed_id_change_listener.h"
-#include "include/xamarin/sk_managed_id_change_listener_list.h"
+#include "include/xamarin/sk_managedidchangelistener.h"
+#include "include/xamarin/sk_managedidchangelistenerlist.h"
 #include "include/xamarin/sk_compatpaint.h"
 
 SK_X_API void** KeepSkiaCSymbols (void);
@@ -123,19 +119,14 @@ void** KeepSkiaCSymbols (void)
         // Xamarin
         (void*)sk_compatpaint_new,
         (void*)sk_managedstream_new,
-        // placed here to help seperate in PR
+        (void*)sk_manageddrawable_new,
+        (void*)sk_managedpngchunkreader_new,
         (void*)sk_managedallocator_new,
         (void*)sk_managedpixelref_new,
         (void*)sk_managedpixelref_new_from_existing,
-        (void*)sk_manageddrawable_new,
-        (void*)sk_managed_png_chunk_reader_new,
-        // placed here to help seperate in PR
-        (void*)sk_managedallocator_new,
-        (void*)sk_managed_pixel_ref_new,
-        (void*)sk_managed_pixel_ref_new_from_existing,
         (void*)sk_managedtracememorydump_new,
-        (void*)sk_managed_id_change_listener_new,
-        (void*)sk_managed_id_change_listener_list_new,
+        (void*)sk_managedidchangelistener_new,
+        (void*)sk_managedidchangelistenerlist_new,
     };
     return ret;
 }

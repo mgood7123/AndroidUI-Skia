@@ -7,17 +7,17 @@
  * found in the LICENSE file.
  */
 
-#ifndef sk_id_change_listener_DEFINED
-#define sk_id_change_listener_DEFINED
+#ifndef sk_idchangelistener_DEFINED
+#define sk_idchangelistener_DEFINED
 
-#include "include/c/sk_id_change_listener.h"
+#include "include/c/sk_idchangelistener.h"
 #include "src/c/sk_types_priv.h"
 
-static inline SkIDChangeListener* AsSkIDChangeListener(sk_id_change_listener_t* d) {
+static inline SkIDChangeListener* AsSkIDChangeListener(sk_idchangelistener_t* d) {
     return reinterpret_cast<SkIDChangeListener*>(d);
 }
 
-static sk_id_change_listener_procs_t gProcs;
+static sk_idchangelistener_procs_t gProcs;
 
 void changed(SkIDChangeListener* d, void* context) {
     if (gProcs.fChanged) {
@@ -25,13 +25,13 @@ void changed(SkIDChangeListener* d, void* context) {
     }
 }
 
-sk_id_change_listener_t* sk_id_change_listener_new(void* context) {
+sk_idchangelistener_t* sk_idchangelistener_new(void* context) {
     return ToSKIDChangeListener(new SkIDChangeListener(context));
 }
 
-void sk_id_change_listener_delete(sk_id_change_listener_t* d) { delete AsManagedAllocator(d); }
+void sk_idchangelistener_delete(sk_idchangelistener_t* d) { delete AsManagedAllocator(d); }
 
-void sk_id_change_listener_set_procs(sk_id_change_listener_procs_t procs) {
+void sk_idchangelistener_set_procs(sk_idchangelistener_procs_t procs) {
     gProcs = procs;
 
     SkManagedAllocator::Procs p;
