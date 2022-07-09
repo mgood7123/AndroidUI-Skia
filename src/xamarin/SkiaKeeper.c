@@ -52,6 +52,9 @@
 
 // Xamarin
 #include "include/xamarin/sk_managedstream.h"
+// placed here to help seperate in PR
+#include "include/xamarin/sk_managedallocator.h"
+#include "include/xamarin/sk_managedpixelref.h"
 #include "include/xamarin/sk_manageddrawable.h"
 #include "include/xamarin/sk_managedpngchunkreader.h"
 #include "include/xamarin/sk_managedallocator.h"
@@ -114,6 +117,10 @@ void** KeepSkiaCSymbols (void)
         // Xamarin
         (void*)sk_compatpaint_new,
         (void*)sk_managedstream_new,
+        // placed here to help seperate in PR
+        (void*)sk_managedallocator_new,
+        (void*)sk_managedpixelref_new,
+        (void*)sk_managedpixelref_new_from_existing,
         (void*)sk_manageddrawable_new,
         (void*)sk_managedpngchunkreader_new,
         (void*)sk_managedallocator_new,
