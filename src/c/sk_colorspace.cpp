@@ -76,6 +76,14 @@ bool sk_colorspace_equals(const sk_colorspace_t* src, const sk_colorspace_t* dst
     return SkColorSpace::Equals(AsColorSpace(src), AsColorSpace(dst));
 }
 
+sk_data_t* sk_colorspace_serialize(const sk_colorspace_t* colorspace) {
+    return ToData(AsColorSpace(colorspace)->serialize().release());
+}
+
+sk_colorspace_t* sk_colorspace_deserialize(const sk_data_t* data) {
+    const SkData* skdata = AsData(data);
+    return ToColorSpace(SkColorSpace::Deserialize(skdata->data(), skdata->size()).release());
+}
 
 // sk_colorspace_transfer_fn_t
 

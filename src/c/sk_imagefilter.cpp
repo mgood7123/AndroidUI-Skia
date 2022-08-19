@@ -183,3 +183,22 @@ sk_imagefilter_t* sk_imagefilter_new_point_lit_specular(const sk_point3_t* locat
 sk_imagefilter_t* sk_imagefilter_new_spot_lit_specular(const sk_point3_t* location, const sk_point3_t* target, float specularExponent, float cutoffAngle, sk_color_t lightColor, float surfaceScale, float ks, float shininess, sk_imagefilter_t* input, const sk_imagefilter_croprect_t* cropRect) {
     return ToImageFilter(SkLightingImageFilter::MakeSpotLitSpecular(*AsPoint3(location), *AsPoint3(target), specularExponent, cutoffAngle, lightColor, surfaceScale, ks, shininess, sk_ref_sp(AsImageFilter(input)), AsImageFilterCropRect(cropRect)).release());
 }
+
+sk_data_t* sk_imagefilter_serialize(const sk_imagefilter_t* imagefilter) {
+    return ToData(AsImageFilter(imagefilter)->serialize().release());
+}
+
+sk_imagefilter_t* sk_imagefilter_deserialize(const sk_data_t* data) {
+    const SkData* skdata = AsData(data);
+    return ToImageFilter(
+        sk_sp<SkImageFilter>(
+            static_cast<SkImageFilter*>(
+                SkFlattenable::Deserialize(
+                    SkImageFilter::GetFlattenableType(),
+                    skdata->data(),
+                    skdata->size()
+                ).release()
+            )
+        ).release()
+    );
+}

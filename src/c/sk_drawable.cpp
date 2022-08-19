@@ -46,3 +46,22 @@ void sk_drawable_notify_drawing_changed(sk_drawable_t* d)
 {
     AsDrawable(d)->notifyDrawingChanged();
 }
+
+sk_data_t* sk_drawable_serialize(const sk_drawable_t* drawable) {
+    return ToData(AsDrawable(drawable)->serialize().release());
+}
+
+sk_drawable_t* sk_drawable_deserialize(const sk_data_t* data) {
+    const SkData* skdata = AsData(data);
+    return ToDrawable(
+        sk_sp<SkDrawable>(
+            static_cast<SkDrawable*>(
+                SkFlattenable::Deserialize(
+                    SkDrawable::GetFlattenableType(),
+                    skdata->data(),
+                    skdata->size()
+                ).release()
+            )
+        ).release()
+    );
+}

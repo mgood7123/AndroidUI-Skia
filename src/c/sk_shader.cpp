@@ -36,6 +36,25 @@ sk_shader_t* sk_shader_with_color_filter(const sk_shader_t* shader, const sk_col
     return ToShader(AsShader(shader)->makeWithColorFilter(sk_ref_sp(AsColorFilter(filter))).release());
 }
 
+sk_data_t* sk_shader_serialize(const sk_shader_t* shader) {
+    return ToData(AsShader(shader)->serialize().release());
+}
+
+sk_shader_t* sk_shader_deserialize(const sk_data_t* data) {
+    const SkData* skdata = AsData(data);
+    return ToShader(
+        sk_sp<SkShader>(
+            static_cast<SkShader*>(
+                SkFlattenable::Deserialize(
+                    SkFlattenable::kSkShaderBase_Type,
+                    skdata->data(),
+                    skdata->size()
+                ).release()
+            )
+        ).release()
+    );
+}
+
 // SkShaders
 
 sk_shader_t* sk_shader_new_empty(void) {

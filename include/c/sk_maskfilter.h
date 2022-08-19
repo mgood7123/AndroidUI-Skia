@@ -23,6 +23,9 @@ SK_C_API sk_maskfilter_t* sk_maskfilter_new_gamma(float gamma);
 SK_C_API sk_maskfilter_t* sk_maskfilter_new_clip(uint8_t min, uint8_t max);
 SK_C_API sk_maskfilter_t* sk_maskfilter_new_shader(sk_shader_t* cshader);
 
+SK_C_API sk_data_t* sk_maskfilter_serialize(const sk_maskfilter_t* maskfilter);
+SK_C_API sk_maskfilter_t* sk_maskfilter_deserialize(const sk_data_t* data);
+
 SK_C_PLUS_PLUS_END_GUARD
 
 #endif

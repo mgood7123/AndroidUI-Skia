@@ -59,6 +59,9 @@ SK_C_API sk_imagefilter_t* sk_imagefilter_new_distant_lit_specular(const sk_poin
 SK_C_API sk_imagefilter_t* sk_imagefilter_new_point_lit_specular(const sk_point3_t* location, sk_color_t lightColor, float surfaceScale, float ks, float shininess, sk_imagefilter_t* input, const sk_imagefilter_croprect_t* cropRect);
 SK_C_API sk_imagefilter_t* sk_imagefilter_new_spot_lit_specular(const sk_point3_t* location, const sk_point3_t* target, float specularExponent, float cutoffAngle, sk_color_t lightColor, float surfaceScale, float ks, float shininess, sk_imagefilter_t* input, const sk_imagefilter_croprect_t* cropRect);
 
+SK_C_API sk_data_t* sk_imagefilter_serialize(const sk_imagefilter_t* imagefilter);
+SK_C_API sk_imagefilter_t* sk_imagefilter_deserialize(const sk_data_t* data);
+
 
 SK_C_PLUS_PLUS_END_GUARD
 

@@ -7,6 +7,7 @@
  * found in the LICENSE file.
  */
 
+#include "include/core/SkSerialProcs.h"
 #include "include/core/SkTextBlob.h"
 
 #include "include/c/sk_textblob.h"
@@ -32,6 +33,20 @@ void sk_textblob_get_bounds(const sk_textblob_t* blob, sk_rect_t* bounds) {
 
 int sk_textblob_get_intercepts(const sk_textblob_t* blob, const float bounds[2], float intervals[], const sk_paint_t* paint) {
     return AsTextBlob(blob)->getIntercepts(bounds, intervals, AsPaint(paint));
+}
+
+// serialization and deserialization requires SkSerialProcs
+// use empty for now
+
+sk_data_t* sk_textblob_serialize(const sk_textblob_t* blob) {
+    SkSerialProcs procs;
+    return ToData(AsTextBlob(blob)->serialize(procs).release());
+}
+
+sk_textblob_t* sk_textblob_deserialize(const sk_data_t* data) {
+    SkDeserialProcs procs;
+    const SkData* skdata = AsData(data);
+    return ToTextBlob(SkTextBlob::Deserialize(skdata->data(), skdata->size(), procs).release());
 }
 
 

@@ -350,3 +350,18 @@ bool sk_path_is_line(sk_path_t* cpath, sk_point_t line [2]) {
 bool sk_path_is_rect(sk_path_t* cpath, sk_rect_t* rect, bool* isClosed, sk_path_direction_t* direction) {
     return AsPath(cpath)->isRect(AsRect(rect), isClosed, (SkPathDirection*)direction);
 }
+
+sk_data_t* sk_path_serialize(const sk_path_t* path) {
+    return ToData(AsPath(path)->serialize().release());
+}
+
+sk_path_t* sk_path_deserialize(const sk_data_t* data) {
+    // SkPath contains no static Deserialize method
+    // so we emulate it based on
+    // https://fiddle.skia.org/c/@Path_serialize
+    const SkData* skdata = AsData(data);
+    SkPath * path = new SkPath();
+    size_t size = path->readFromMemory(skdata->data(), skdata->size());
+    // if size is zero then we failed to deserialize the data and the path is left unmodified
+    return ToPath(path);
+}

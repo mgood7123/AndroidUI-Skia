@@ -59,3 +59,22 @@ sk_path_effect_t* sk_path_effect_create_dash(const float intervals[], int count,
 sk_path_effect_t* sk_path_effect_create_trim(float start, float stop, sk_path_effect_trim_mode_t mode) {
     return ToPathEffect(SkTrimPathEffect::Make(start, stop, (SkTrimPathEffect::Mode)mode).release());
 }
+
+sk_data_t* sk_path_effect_serialize(const sk_path_effect_t* path_effect) {
+    return ToData(AsPathEffect(path_effect)->serialize().release());
+}
+
+sk_path_effect_t* sk_path_effect_deserialize(const sk_data_t* data) {
+    const SkData* skdata = AsData(data);
+    return ToPathEffect(
+        sk_sp<SkPathEffect>(
+            static_cast<SkPathEffect*>(
+                SkFlattenable::Deserialize(
+                    SkPathEffect::GetFlattenableType(),
+                    skdata->data(),
+                    skdata->size()
+                ).release()
+            )
+        ).release()
+    );
+}

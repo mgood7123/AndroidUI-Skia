@@ -40,6 +40,8 @@ SK_C_API bool sk_region_quick_reject(const sk_region_t* r, const sk_region_t* re
 SK_C_API void sk_region_translate(sk_region_t* r, int x, int y);
 SK_C_API bool sk_region_op_rect(sk_region_t* r, const sk_irect_t* rect, sk_region_op_t op);
 SK_C_API bool sk_region_op(sk_region_t* r, const sk_region_t* region, sk_region_op_t op);
+SK_C_API sk_data_t* sk_region_serialize(const sk_region_t* region);
+SK_C_API sk_region_t* sk_region_deserialize(const sk_data_t* data);
 
 // sk_region_iterator_t
 

@@ -21,6 +21,8 @@ SK_C_API void sk_textblob_unref(const sk_textblob_t* blob);
 SK_C_API uint32_t sk_textblob_get_unique_id(const sk_textblob_t* blob);
 SK_C_API void sk_textblob_get_bounds(const sk_textblob_t* blob, sk_rect_t* bounds);
 SK_C_API int sk_textblob_get_intercepts(const sk_textblob_t* blob, const float bounds[2], float intervals[], const sk_paint_t* paint);
+SK_C_API sk_data_t* sk_textblob_serialize(const sk_textblob_t* path);
+SK_C_API sk_textblob_t* sk_textblob_deserialize(const sk_data_t* data);
 
 // sk_textblob_builder_t
 

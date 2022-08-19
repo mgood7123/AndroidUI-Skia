@@ -119,6 +119,33 @@ sk_stream_asset_t* sk_typeface_open_stream(const sk_typeface_t* typeface, int* t
     return ToStreamAsset(AsTypeface(typeface)->openStream(ttcIndex).release());
 }
 
+// the interface for typeface serialization and deserialization is a bit obscure
+// the CreateFromData(data, index) does not seem to document what the `index` refers to
+
+sk_data_t* sk_typeface_serialize(const sk_typeface_t* typeface) {
+    return ToData(AsTypeface(typeface)->serialize(SkTypeface::SerializeBehavior::kDoIncludeData).release());
+}
+
+sk_typeface_t* sk_typeface_deserialize(const sk_data_t* data) {
+    // there is no deserialize from data method however we can deserialize from stream
+    const SkData* skdata = AsData(data);
+
+    // /** If copyData is true, the stream makes a private copy of the data. */
+    // SkMemoryStream(const void* data, size_t length, bool copyData = false);
+
+    SkMemoryStream stream(skdata->data(), skdata->size());
+
+    // /** Given the data previously written by serialize(), return a new instance
+    //     of a typeface referring to the same font. If that font is not available,
+    //     return nullptr.
+    //     Does not affect ownership of SkStream.
+    //  */
+    // static sk_sp<SkTypeface> MakeDeserialize(SkStream*);
+
+    return ToTypeface(SkTypeface::MakeDeserialize(&stream).release());
+}
+
+
 
 // font manager
 

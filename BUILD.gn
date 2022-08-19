@@ -1002,7 +1002,7 @@ optional("xps") {
 
 optional("png_decode") {
   enabled = skia_use_libpng_decode
-  public_defines = [ "SK_CODEC_DECODES_PNG" ]
+  public_defines = [ "SK_CODEC_DECODES_PNG", "PNG_READ_UNKNOWN_CHUNKS_SUPPORTED" ]
 
   deps = [ "//third_party/libpng" ]
   sources = [

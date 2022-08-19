@@ -23,6 +23,8 @@ SK_C_API sk_colorfilter_t* sk_colorfilter_new_luma_color(void);
 SK_C_API sk_colorfilter_t* sk_colorfilter_new_high_contrast(const sk_highcontrastconfig_t* config);
 SK_C_API sk_colorfilter_t* sk_colorfilter_new_table(const uint8_t table[256]);
 SK_C_API sk_colorfilter_t* sk_colorfilter_new_table_argb(const uint8_t tableA[256], const uint8_t tableR[256], const uint8_t tableG[256], const uint8_t tableB[256]);
+SK_C_API sk_data_t* sk_colorfilter_serialize(const sk_colorfilter_t* colorfilter);
+SK_C_API sk_colorfilter_t* sk_colorfilter_deserialize(const sk_data_t* data);
 
 SK_C_PLUS_PLUS_END_GUARD
 

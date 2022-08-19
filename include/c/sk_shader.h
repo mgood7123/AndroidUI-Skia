@@ -20,6 +20,8 @@ SK_C_API void sk_shader_ref(sk_shader_t* shader);
 SK_C_API void sk_shader_unref(sk_shader_t* shader);
 SK_C_API sk_shader_t* sk_shader_with_local_matrix(const sk_shader_t* shader, const sk_matrix_t* localMatrix);
 SK_C_API sk_shader_t* sk_shader_with_color_filter(const sk_shader_t* shader, const sk_colorfilter_t* filter);
+SK_C_API sk_data_t* sk_shader_serialize(const sk_shader_t* shader);
+SK_C_API sk_shader_t* sk_shader_deserialize(const sk_data_t* data);
 
 // SkShaders
 

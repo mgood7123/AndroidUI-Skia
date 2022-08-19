@@ -51,3 +51,22 @@ sk_colorfilter_t* sk_colorfilter_new_table(const uint8_t table[256]) {
 sk_colorfilter_t* sk_colorfilter_new_table_argb(const uint8_t tableA[256], const uint8_t tableR[256], const uint8_t tableG[256], const uint8_t tableB[256]) {
     return ToColorFilter(SkTableColorFilter::MakeARGB(tableA, tableR, tableG, tableB).release());
 }
+
+sk_data_t* sk_colorfilter_serialize(const sk_colorfilter_t* colorfilter) {
+    return ToData(AsColorFilter(colorfilter)->serialize().release());
+}
+
+sk_colorfilter_t* sk_colorfilter_deserialize(const sk_data_t* data) {
+    const SkData* skdata = AsData(data);
+    return ToColorFilter(
+        sk_sp<SkColorFilter>(
+            static_cast<SkColorFilter*>(
+                SkFlattenable::Deserialize(
+                    SkColorFilter::GetFlattenableType(),
+                    skdata->data(),
+                    skdata->size()
+                ).release()
+            )
+        ).release()
+    );
+}

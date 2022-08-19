@@ -33,6 +33,8 @@ SK_C_API sk_colorspace_t* sk_colorspace_make_linear_gamma(const sk_colorspace_t*
 SK_C_API sk_colorspace_t* sk_colorspace_make_srgb_gamma(const sk_colorspace_t* colorspace);
 SK_C_API bool sk_colorspace_is_srgb(const sk_colorspace_t* colorspace);
 SK_C_API bool sk_colorspace_equals(const sk_colorspace_t* src, const sk_colorspace_t* dst);
+SK_C_API sk_data_t* sk_colorspace_serialize(const sk_colorspace_t* colorspace);
+SK_C_API sk_colorspace_t* sk_colorspace_deserialize(const sk_data_t* data);
 
 // sk_colorspace_transfer_fn_t
 

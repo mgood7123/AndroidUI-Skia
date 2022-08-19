@@ -109,6 +109,21 @@ bool sk_region_op(sk_region_t* r, const sk_region_t* region, sk_region_op_t op) 
     return AsRegion(r)->op(*AsRegion(region), (SkRegion::Op)op);
 }
 
+sk_data_t* sk_region_serialize(const sk_region_t* region) {
+    const SkRegion* r = AsRegion(region);
+    SkData* data = SkData::MakeUninitialized(r->writeToMemory(nullptr)).release();
+    r->writeToMemory(data->writable_data());
+    return ToData(data);
+}
+
+sk_region_t* sk_region_deserialize(const sk_data_t* data) {
+    const SkData* skdata = AsData(data);
+    SkRegion* r = new SkRegion();
+    r->readFromMemory(skdata->data(), skdata->size());
+    return ToRegion(r);
+}
+
+
 
 // sk_region_iterator_t
 

@@ -47,3 +47,22 @@ sk_maskfilter_t* sk_maskfilter_new_blur_with_flags(sk_blurstyle_t cstyle, float 
 sk_maskfilter_t* sk_maskfilter_new_shader(sk_shader_t* cshader) {
     return ToMaskFilter(SkShaderMaskFilter::Make(sk_ref_sp(AsShader(cshader))).release());
 }
+
+sk_data_t* sk_maskfilter_serialize(const sk_maskfilter_t* maskfilter) {
+    return ToData(AsMaskFilter(maskfilter)->serialize().release());
+}
+
+sk_maskfilter_t* sk_maskfilter_deserialize(const sk_data_t* data) {
+    const SkData* skdata = AsData(data);
+    return ToMaskFilter(
+        sk_sp<SkMaskFilter>(
+            static_cast<SkMaskFilter*>(
+                SkFlattenable::Deserialize(
+                    SkMaskFilter::GetFlattenableType(),
+                    skdata->data(),
+                    skdata->size()
+                ).release()
+            )
+        ).release()
+    );
+}
