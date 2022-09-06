@@ -54,12 +54,12 @@
 #include "include/xamarin/sk_managedstream.h"
 #include "include/xamarin/sk_manageddrawable.h"
 #include "include/xamarin/sk_managedpngchunkreader.h"
+#include "include/xamarin/sk_managedcallbackcanvas.h"
 #include "include/xamarin/sk_managedallocator.h"
 #include "include/xamarin/sk_managedpixelref.h"
 #include "include/xamarin/sk_managedtracememorydump.h"
 #include "include/xamarin/sk_managedidchangelistener.h"
 #include "include/xamarin/sk_managedidchangelistenerlist.h"
-#include "include/xamarin/sk_compatpaint.h"
 
 SK_X_API void** KeepSkiaCSymbols (void);
 
@@ -93,6 +93,7 @@ void** KeepSkiaCSymbols (void)
         (void*)sk_maskfilter_ref,
         (void*)sk_matrix_concat,
         (void*)sk_paint_new,
+        (void*)sk_paint_new_with_font,
         (void*)sk_path_new,
         (void*)sk_path_effect_unref,
         (void*)sk_picture_recorder_new,
@@ -117,10 +118,10 @@ void** KeepSkiaCSymbols (void)
         (void*)skottie_animation_keepalive,
 
         // Xamarin
-        (void*)sk_compatpaint_new,
         (void*)sk_managedstream_new,
         (void*)sk_manageddrawable_new,
         (void*)sk_managedpngchunkreader_new,
+        (void*)sk_managedcallbackcanvas_new,
         (void*)sk_managedallocator_new,
         (void*)sk_managedpixelref_new,
         (void*)sk_managedpixelref_new_from_existing,

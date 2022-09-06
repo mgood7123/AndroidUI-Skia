@@ -37,6 +37,9 @@
 
 #include <fstream>
 
+// required to enable CPU support for SKSL, this enables SKSL to work in a CPU canvas
+#define SK_ENABLE_SKSL_INTERPRETER
+
 #if !defined(SKSL_STANDALONE) & SK_SUPPORT_GPU
 #include "include/gpu/GrContextOptions.h"
 #include "src/gpu/GrShaderCaps.h"

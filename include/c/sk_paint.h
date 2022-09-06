@@ -14,12 +14,24 @@
 
 SK_C_PLUS_PLUS_BEGIN_GUARD
 
+SK_C_API sk_paint_t* sk_paint_new_with_font(const sk_font_t* font);
+SK_C_API sk_font_t* sk_paint_make_font(sk_paint_t* paint);
+SK_C_API sk_font_t* sk_paint_get_font(sk_paint_t* paint);
+SK_C_API void sk_paint_set_text_align(sk_paint_t* paint, sk_text_align_t align);
+SK_C_API sk_text_align_t sk_paint_get_text_align(const sk_paint_t* paint);
+SK_C_API void sk_paint_set_text_encoding(sk_paint_t* paint, sk_text_encoding_t encoding);
+SK_C_API sk_text_encoding_t sk_paint_get_text_encoding(const sk_paint_t* paint);
 SK_C_API sk_paint_t* sk_paint_new(void);
 SK_C_API sk_paint_t* sk_paint_clone(sk_paint_t*);
 SK_C_API void sk_paint_delete(sk_paint_t*);
 SK_C_API void sk_paint_reset(sk_paint_t*);
 SK_C_API bool sk_paint_is_antialias(const sk_paint_t*);
 SK_C_API void sk_paint_set_antialias(sk_paint_t*, bool);
+SK_C_API bool sk_paint_nothing_to_draw(const sk_paint_t* cpaint);
+SK_C_API uint8_t sk_paint_get_alpha(const sk_paint_t* cpaint);
+SK_C_API void sk_paint_set_alpha(sk_paint_t* cpaint, uint8_t alpha);
+SK_C_API float sk_paint_get_alphaf(const sk_paint_t* cpaint);
+SK_C_API void sk_paint_set_alphaf(sk_paint_t* cpaint, float alpha);
 SK_C_API sk_color_t sk_paint_get_color(const sk_paint_t*);
 SK_C_API void sk_paint_get_color4f(const sk_paint_t* paint, sk_color4f_t* color);
 SK_C_API void sk_paint_set_color(sk_paint_t*, sk_color_t);

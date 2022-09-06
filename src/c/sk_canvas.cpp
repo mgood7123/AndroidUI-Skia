@@ -21,6 +21,18 @@ void sk_canvas_destroy(sk_canvas_t* ccanvas) {
     delete AsCanvas(ccanvas);
 }
 
+void sk_canvas_get_image_info(const sk_canvas_t* ccanvas, sk_imageinfo_t* info) {
+    *info = ToImageInfo(AsCanvas(ccanvas)->imageInfo());
+}
+
+sk_surface_t* sk_canvas_get_surface(const sk_canvas_t* ccanvas) {
+    return ToSurface(AsCanvas(ccanvas)->getSurface());
+}
+
+sk_isize_t sk_canvas_get_size(const sk_canvas_t* ccanvas) {
+    return ToISize(AsCanvas(ccanvas)->getBaseLayerSize());
+}
+
 void sk_canvas_clear(sk_canvas_t* ccanvas, sk_color_t color) {
     AsCanvas(ccanvas)->clear(color);
 }
@@ -95,6 +107,10 @@ void sk_canvas_clip_path_with_operation(sk_canvas_t* ccanvas, const sk_path_t* c
 
 void sk_canvas_clip_rrect_with_operation(sk_canvas_t* ccanvas, const sk_rrect_t* crect, sk_clipop_t op, bool doAA) {
     AsCanvas(ccanvas)->clipRRect(*AsRRect(crect), (SkClipOp)op, doAA);
+}
+
+void sk_canvas_clip_shader_with_operation(sk_canvas_t* ccanvas, sk_shader_t* cshader, sk_clipop_t op) {
+    AsCanvas(ccanvas)->clipShader(sk_sp<SkShader>(AsShader(cshader)), (SkClipOp)op);
 }
 
 bool sk_canvas_get_local_clip_bounds(sk_canvas_t* ccanvas, sk_rect_t* cbounds) {

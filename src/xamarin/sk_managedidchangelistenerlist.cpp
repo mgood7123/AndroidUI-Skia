@@ -40,7 +40,7 @@ void sk_managedidchangelistenerlist_delete(sk_idchangelistenerlist_t* d) {
 }
 
 void sk_managedidchangelistenerlist_add(sk_idchangelistenerlist_t* d, sk_idchangelistener_t* listener, bool single_threaded) {
-    AsSkManagedIDChangeListenerList(d)->add(sk_sp(AsSkManagedIDChangeListener(listener)),
+    AsSkManagedIDChangeListenerList(d)->add(sk_sp<SkManagedIDChangeListener>(AsSkManagedIDChangeListener(listener)),
                                                 single_threaded);
 }
 

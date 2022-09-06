@@ -17,6 +17,34 @@
 
 #include "src/c/sk_types_priv.h"
 
+sk_paint_t* sk_paint_new_with_font(const sk_font_t* font) {
+    return ToPaint(new SkPaint(AsFont(font)));
+}
+
+sk_font_t* sk_paint_make_font(sk_paint_t* paint) {
+    return ToFont(AsPaint(paint)->makeFont());
+}
+
+sk_font_t* sk_paint_get_font(sk_paint_t* paint) {
+    return ToFont(AsPaint(paint)->getFont());
+}
+
+void sk_paint_set_text_align(sk_paint_t* paint, sk_text_align_t align) {
+    AsPaint(paint)->setTextAlign((SkPaint::Align)align);
+}
+
+sk_text_align_t sk_paint_get_text_align(const sk_paint_t* paint) {
+    return (sk_text_align_t)AsPaint(paint)->getTextAlign();
+}
+
+void sk_paint_set_text_encoding(sk_paint_t* paint, sk_text_encoding_t encoding) {
+    AsPaint(paint)->setTextEncoding((SkTextEncoding)encoding);
+}
+
+sk_text_encoding_t sk_paint_get_text_encoding(const sk_paint_t* paint) {
+    return (sk_text_encoding_t)AsPaint(paint)->getTextEncoding();
+}
+
 sk_paint_t* sk_paint_new(void) {
     return ToPaint(new SkPaint());
 }
@@ -37,6 +65,26 @@ bool sk_paint_is_antialias(const sk_paint_t* cpaint) {
 
 void sk_paint_set_antialias(sk_paint_t* cpaint, bool aa) {
     AsPaint(cpaint)->setAntiAlias(aa);
+}
+
+bool sk_paint_nothing_to_draw(const sk_paint_t* cpaint) {
+    return AsPaint(cpaint)->nothingToDraw();
+}
+
+uint8_t sk_paint_get_alpha(const sk_paint_t* cpaint) {
+    return AsPaint(cpaint)->getAlpha();
+}
+
+void sk_paint_set_alpha(sk_paint_t* cpaint, uint8_t alpha) {
+    return AsPaint(cpaint)->setAlpha(alpha);
+}
+
+float sk_paint_get_alphaf(const sk_paint_t* cpaint) {
+    return AsPaint(cpaint)->getAlphaf();
+}
+
+void sk_paint_set_alphaf(sk_paint_t* cpaint, float alpha) {
+    return AsPaint(cpaint)->setAlphaf(alpha);
 }
 
 sk_color_t sk_paint_get_color(const sk_paint_t* cpaint) {

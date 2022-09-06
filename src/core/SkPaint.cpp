@@ -40,24 +40,60 @@
 //#define SK_REPORT_API_RANGE_CHECK
 
 
-SkPaint::SkPaint()
-    : fColor4f{0, 0, 0, 1}  // opaque black
-    , fWidth{0}
-    , fMiterLimit{SkPaintDefaults_MiterLimit}
-    , fBitfields{(unsigned)false,                   // fAntiAlias
+SkPaint::SkPaint(const SkFont& font)
+    : fFont(font)
+    , fTextAlign(Align::kLeft_Align)
+    , fTextEncoding(SkTextEncoding::kUTF8)
+    , fColor4f{ 0, 0, 0, 1 }  // opaque black
+    , fWidth{ 0 }
+    , fMiterLimit{ SkPaintDefaults_MiterLimit }
+    , fBitfields{ (unsigned)false,                  // fAntiAlias
                  (unsigned)false,                   // fDither
                  (unsigned)SkPaint::kDefault_Cap,   // fCapType
                  (unsigned)SkPaint::kDefault_Join,  // fJoinType
                  (unsigned)SkPaint::kFill_Style,    // fStyle
                  (unsigned)kNone_SkFilterQuality,   // fFilterQuality
                  (unsigned)SkBlendMode::kSrcOver,   // fBlendMode
-                 0}                                 // fPadding
+                 0 }                                // fPadding
 {
     static_assert(sizeof(fBitfields) == sizeof(fBitfieldsUInt), "");
 }
 
+SkPaint::SkPaint() : SkPaint(SkFont()) {
+    fFont.setLinearMetrics(true);
+    fFont.setEdging(SkFont::Edging::kAlias);
+}
+
+SkPaint::SkPaint(const SkFont* font) : SkPaint(*font) {}
+
 SkPaint::SkPaint(const SkColor4f& color, SkColorSpace* colorSpace) : SkPaint() {
+    fFont.setLinearMetrics(true);
+    fFont.setEdging(SkFont::Edging::kAlias);
     this->setColor(color, colorSpace);
+}
+
+SkFont* SkPaint::makeFont() {
+    return new SkFont(fFont);
+}
+
+SkFont* SkPaint::getFont() {
+    return &fFont;
+}
+
+void SkPaint::setTextAlign(Align textAlign) {
+    fTextAlign = textAlign;
+}
+
+SkPaint::Align SkPaint::getTextAlign() const {
+    return fTextAlign;
+}
+
+void SkPaint::setTextEncoding(SkTextEncoding encoding) {
+    fTextEncoding = encoding;
+}
+
+SkTextEncoding SkPaint::getTextEncoding() const {
+    return fTextEncoding;
 }
 
 SkPaint::SkPaint(const SkPaint& src) = default;
@@ -436,7 +472,8 @@ bool SkPaint::nothingToDraw() const {
 uint32_t SkPaint::getHash() const {
     // We're going to hash 5 pointers and 6 floats, finishing up with fBitfields,
     // so fBitfields should be 5 pointers and 6 floats from the start.
-    static_assert(offsetof(SkPaint, fBitfieldsUInt) == 5 * sizeof(void*) + 6 * sizeof(float),
+    // plus additional fields
+    static_assert(offsetof(SkPaint, fBitfieldsUInt) == (5 * sizeof(void*)) + sizeof(SkFont) + sizeof(Align) + sizeof(SkTextEncoding) +  (6 * sizeof(float)),
                   "SkPaint_notPackedTightly");
     return SkOpts::hash(reinterpret_cast<const uint32_t*>(this),
                         offsetof(SkPaint, fBitfieldsUInt) + sizeof(fBitfieldsUInt));

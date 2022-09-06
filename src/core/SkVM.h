@@ -19,6 +19,9 @@
 
 class SkWStream;
 
+// enable JIT if possible
+#define SKVM_JIT_WHEN_POSSIBLE
+
 #if defined(SKVM_JIT_WHEN_POSSIBLE)
     #if defined(__x86_64__) || defined(_M_X64)
         #if defined(_WIN32) || defined(__linux) || defined(__APPLE__)

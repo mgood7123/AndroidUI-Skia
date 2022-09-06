@@ -8,6 +8,10 @@
  */
 
 #include "include/c/gr_context.h"
+#include "src/gpu/GrRecordingContextPriv.h"
+#include "src/gpu/GrCaps.h"
+#include "include/core/SkSurface.h"
+
 
 #include "src/c/sk_types_priv.h"
 
@@ -15,6 +19,96 @@
 
 void gr_recording_context_unref(gr_recording_context_t* context) {
     SK_ONLY_GPU(SkSafeUnref(AsGrRecordingContext(context)));
+}
+
+bool gr_recording_context_should_convert_alpha8_to_r8(gr_recording_context_t* context) {
+#if SK_SUPPORT_GPU
+
+    SkImageInfo info = SkImageInfo::MakeA8(1, 1);
+    auto gpuSurface(SkSurface::MakeRenderTarget(AsGrRecordingContext(context), SkBudgeted::kNo, info, 0, kBottomLeft_GrSurfaceOrigin, nullptr, false));
+    auto surfaceCanvas = gpuSurface->getCanvas();
+    SkColor color;
+    color = SkColorSetA(color, 255);
+    surfaceCanvas->drawColor(color);
+    auto image_(gpuSurface->makeImageSnapshot());
+    auto raster = image_->makeRasterImage();
+    SkPixmap pixmap;
+    raster->peekPixels(&pixmap);
+    const uint8_t* pixels = reinterpret_cast<const uint8_t*>(pixmap.addr());
+    SkDebugf(pixels == nullptr ? "nullptr\n" : pixels[0] == 255 ? "TWO FIVE FIVE\n" : "SOMETHING ELSE\n");
+
+    auto format = AsGrRecordingContext(context)->priv().caps()->getDefaultBackendFormat(GrColorType::kAlpha_8, GrRenderable::kYes);
+    return format.channelMask() == kRed_SkColorChannelFlag;
+#else
+    return false;
+#endif
+#if 0
+    switch (format.backend()) {
+    case GrBackendApi::kOpenGL: {
+#ifdef SK_GL
+        return format.asGLFormat() == GrGLFormat::kR8;
+#else
+        return false;
+#endif
+    } // GL
+    case GrBackendApi::kVulkan: {
+#ifdef SK_VULKAN
+        VkFormat vkFormat;
+        if (!format.asVkFormat(vkformat)) {
+            return false;
+        }
+        switch (vkformat) {
+        case VK_FORMAT_R8_UNORM:
+        case VK_FORMAT_R8_SNORM:
+        case VK_FORMAT_R8_USCALED:
+        case VK_FORMAT_R8_SSCALED:
+        case VK_FORMAT_R8_UINT:
+        case VK_FORMAT_R8_SINT:
+        case VK_FORMAT_R8_SRGB:
+            return true;
+        default:
+            return false;
+        }
+#    else
+        return false;
+#    endif
+    } // VULKAN
+    case GrBackendApi::kMetal: {
+#ifdef SK_METAL
+        return format.asMtlFormat() == MTLPixelFormatR8Unorm;
+#else
+        return false;
+#endif
+    } // METAL
+    case GrBackendApi::kDirect3D: {
+#ifdef SK_DIRECT3D
+        DXGI_FORMAT dxgiFormat;
+        if (!format.asDxgiFormat(&dxgiFormat)) {
+            return false;
+        }
+        return dxgiFormat == DXGI_FORMAT_R8_UNORM;
+#else
+        return false;
+#endif
+    } // DIRECT 3D
+    case GrBackendApi::kDawn: {
+#ifdef SK_DAWN
+        wgpu::TextureFormat dawnFormat;
+        if (!format.asDawnFormat(&dawnFormat)) {
+            return false;
+        }
+        return dawnFormat == wgpu::TextureFormat::R8Unorm;
+#else
+        return false;
+#endif
+    } // DAWN
+    case GrBackendApi::kMock: {
+        // MOCK BACKEND NOT SUPPORTED YET
+        return false;
+    }
+    } // switch(format)
+    return false;
+#endif
 }
 
 int gr_recording_context_get_max_surface_sample_count_for_color_type(gr_recording_context_t* context, sk_colortype_t colorType) {

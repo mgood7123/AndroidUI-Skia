@@ -12,6 +12,7 @@
 #include "include/core/SkColor.h"
 #include "include/core/SkFilterQuality.h"
 #include "include/core/SkRefCnt.h"
+#include "include/core/SkFont.h"
 #include "include/private/SkTo.h"
 
 class SkColorFilter;
@@ -34,6 +35,28 @@ class SkShader;
     SkPaint does not directly implement dashing or blur, but contains the objects that do so.
 */
 class SK_API SkPaint {
+private:
+    SkPaint(const SkFont& font);
+public:
+    enum Align {
+        kLeft_Align,
+        kCenter_Align,
+        kRight_Align,
+    };
+
+    SkPaint(const SkFont* font);
+
+    SkFont* makeFont();
+
+    SkFont* getFont();
+
+    void setTextAlign(Align textAlign);
+    Align getTextAlign() const;
+
+    void setTextEncoding(SkTextEncoding encoding);
+    SkTextEncoding getTextEncoding() const;
+
+
 public:
 
     /** Constructs SkPaint with default values.
@@ -692,6 +715,9 @@ private:
     sk_sp<SkMaskFilter>   fMaskFilter;
     sk_sp<SkColorFilter>  fColorFilter;
     sk_sp<SkImageFilter>  fImageFilter;
+    SkFont fFont;
+    Align fTextAlign;
+    SkTextEncoding fTextEncoding;
 
     SkColor4f       fColor4f;
     SkScalar        fWidth;

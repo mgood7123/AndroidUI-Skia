@@ -15,6 +15,9 @@
 SK_C_PLUS_PLUS_BEGIN_GUARD
 
 SK_C_API void sk_canvas_destroy(sk_canvas_t*);
+SK_C_API void sk_canvas_get_image_info(const sk_canvas_t* ccanvas, sk_imageinfo_t* info);
+SK_C_API sk_surface_t* sk_canvas_get_surface(const sk_canvas_t* ccanvas);
+SK_C_API sk_isize_t sk_canvas_get_size(const sk_canvas_t* ccanvas);
 SK_C_API int sk_canvas_save(sk_canvas_t*);
 SK_C_API int sk_canvas_save_layer(sk_canvas_t*, const sk_rect_t*, const sk_paint_t*);
 SK_C_API void sk_canvas_restore(sk_canvas_t*);
@@ -56,6 +59,7 @@ SK_C_API void sk_canvas_draw_round_rect(sk_canvas_t*, const sk_rect_t*, float rx
 SK_C_API void sk_canvas_clip_rect_with_operation(sk_canvas_t* t, const sk_rect_t* crect, sk_clipop_t op, bool doAA);
 SK_C_API void sk_canvas_clip_path_with_operation(sk_canvas_t* t, const sk_path_t* crect, sk_clipop_t op, bool doAA);
 SK_C_API void sk_canvas_clip_rrect_with_operation(sk_canvas_t* t, const sk_rrect_t* crect, sk_clipop_t op, bool doAA);
+SK_C_API void sk_canvas_clip_shader_with_operation(sk_canvas_t* t, sk_shader_t* cshader, sk_clipop_t op);
 SK_C_API bool sk_canvas_get_local_clip_bounds(sk_canvas_t* t, sk_rect_t* cbounds);
 SK_C_API bool sk_canvas_get_device_clip_bounds(sk_canvas_t* t, sk_irect_t* cbounds);
 SK_C_API void sk_canvas_flush(sk_canvas_t* ccanvas);

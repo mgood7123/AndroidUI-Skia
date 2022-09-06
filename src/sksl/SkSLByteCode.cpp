@@ -17,6 +17,9 @@
 #include <functional>
 #include <vector>
 
+ // required to enable CPU support for SKSL, this enables SKSL to work in a CPU canvas
+#define SK_ENABLE_SKSL_INTERPRETER
+
 namespace SkSL {
 
 #if defined(SK_ENABLE_SKSL_INTERPRETER)

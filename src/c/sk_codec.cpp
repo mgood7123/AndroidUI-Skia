@@ -190,7 +190,7 @@ sk_alphatype_t sk_android_codec_compute_output_alpha(sk_android_codec_t* codec, 
 }
 
 sk_colorspace_t* sk_android_codec_compute_output_color_space(sk_android_codec_t* codec, sk_colortype_t output_color_type, sk_colorspace_t* prefColorSpace) {
-    return ToColorSpace(AsAndroidCodec(codec)->computeOutputColorSpace((SkColorType)output_color_type, sk_sp(AsColorSpace(prefColorSpace))).release());
+    return ToColorSpace(AsAndroidCodec(codec)->computeOutputColorSpace((SkColorType)output_color_type, sk_sp<SkColorSpace>(AsColorSpace(prefColorSpace))).release());
 }
 
 int32_t sk_android_codec_compute_sample_size(sk_android_codec_t* codec, sk_isize_t* size) {
