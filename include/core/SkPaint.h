@@ -37,6 +37,10 @@ class SkShader;
 class SK_API SkPaint {
 private:
     SkPaint(const SkFont& font);
+
+    SkFont fFont;
+    Align fTextAlign;
+    SkTextEncoding fTextEncoding;
 public:
     enum Align {
         kLeft_Align,
@@ -47,7 +51,6 @@ public:
     SkPaint(const SkFont* font);
 
     SkFont* makeFont();
-
     SkFont* getFont();
 
     void setTextAlign(Align textAlign);
@@ -715,9 +718,6 @@ private:
     sk_sp<SkMaskFilter>   fMaskFilter;
     sk_sp<SkColorFilter>  fColorFilter;
     sk_sp<SkImageFilter>  fImageFilter;
-    SkFont fFont;
-    Align fTextAlign;
-    SkTextEncoding fTextEncoding;
 
     SkColor4f       fColor4f;
     SkScalar        fWidth;
