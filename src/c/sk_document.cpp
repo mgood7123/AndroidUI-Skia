@@ -9,9 +9,17 @@
 
 #include "include/core/SkDocument.h"
 #include "include/docs/SkPDFDocument.h"
-#include "include/docs/SkXPSDocument.h"
 
 #include "include/c/sk_document.h"
+
+#if defined(SK_BUILD_FOR_WIN)
+#include "include/docs/SkXPSDocument.h"
+#include "include/core/SkStream.h"
+#include "src/utils/win/SkHRESULT.h"
+#include "src/utils/win/SkTScopedComPtr.h"
+#include "src/xps/SkXPSDevice.h"
+#include <XpsObjectModel.h>
+#endif
 
 #include "src/c/sk_types_priv.h"
 
@@ -28,7 +36,13 @@ sk_document_t* sk_document_create_pdf_from_stream_with_metadata(sk_wstream_t* st
 }
 
 sk_document_t* sk_document_create_xps_from_stream(sk_wstream_t* stream, float dpi) {
-    return ToDocument(SkXPS::MakeDocument(AsWStream(stream), dpi).release());
+#if defined(SK_BUILD_FOR_WIN)
+    IXpsOMObjectFactory* factory;
+    HRN(CoCreateInstance(CLSID_XpsOMObjectFactory, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&factory)));
+    return stream && factory ? ToDocument(SkXPS::MakeDocument(AsWStream(stream), std::move(factory), dpi).release()) : nullptr;
+#else
+    return nullptr;
+#endif
 }
 
 sk_canvas_t* sk_document_begin_page(sk_document_t* document, float width, float height, const sk_rect_t* content) {

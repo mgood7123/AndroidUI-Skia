@@ -6,8 +6,9 @@
  */
 
 #include "include/core/SkRefCnt.h"
+
 #include "include/core/SkTypes.h"
-#include "include/private/GrTypesPriv.h"
+#include "include/private/gpu/ganesh/GrTypesPriv.h"
 
 #include "include/c/sk_types.h"
 #include "include/c/sk_general.h"
@@ -26,9 +27,9 @@ static inline const SkNVRefCnt<void*>* AsNVRefCnt(const sk_nvrefcnt_t* t) {
 bool sk_refcnt_unique(const sk_refcnt_t* refcnt) {
     return AsRefCnt(refcnt)->unique();
 }
-int sk_refcnt_get_ref_count(const sk_refcnt_t* refcnt) {
-    return AsRefCnt(refcnt)->getRefCount();
-}
+//int sk_refcnt_get_ref_count(const sk_refcnt_t* refcnt) {
+//    return AsRefCnt(refcnt)->getRefCnt();
+//}
 void sk_refcnt_safe_ref(sk_refcnt_t* refcnt) {
     SkSafeRef(AsRefCnt(refcnt));
 }
@@ -39,9 +40,9 @@ void sk_refcnt_safe_unref(sk_refcnt_t* refcnt) {
 bool sk_nvrefcnt_unique(const sk_nvrefcnt_t* refcnt) {
     return AsNVRefCnt(refcnt)->unique();
 }
-int sk_nvrefcnt_get_ref_count(const sk_nvrefcnt_t* refcnt) {
-    return AsNVRefCnt(refcnt)->getRefCount();
-}
+//int sk_nvrefcnt_get_ref_count(const sk_nvrefcnt_t* refcnt) {
+//    return AsNVRefCnt(refcnt)->getRefCnt();
+//}
 void sk_nvrefcnt_safe_ref(sk_nvrefcnt_t* refcnt) {
     SkSafeRef(AsNVRefCnt(refcnt));
 }

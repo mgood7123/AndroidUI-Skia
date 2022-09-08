@@ -12,6 +12,7 @@
 #include "include/utils/SkNWayCanvas.h"
 #include "include/core/SkPicture.h" // to draw the skpicture onto this callback canvas
 #include "src/core/SkCanvasPriv.h"
+#include "src/text/GlyphRun.h"
 
 #include "src/c/sk_types_priv.h"
 #include <cstdio>
@@ -22,6 +23,7 @@
 #define ANDROIDUI_PRINT_FUNCTION_NAME
 #endif
 
+// based on SKNWayCanvas
 
 SkManagedCallbackCanvas::Procs SkManagedCallbackCanvas::fProcs;
 
@@ -71,17 +73,17 @@ void SkManagedCallbackCanvas::willRestore() {
 }
 
 
-void SkManagedCallbackCanvas::didConcat(const SkMatrix& matrix) {
+void SkManagedCallbackCanvas::didConcat44(const SkM44& m) {
     ANDROIDUI_PRINT_FUNCTION_NAME;
     if (fProcs.fConcat) {
-        fProcs.fConcat(this, fContext, ToMatrix(&matrix));
+        fProcs.fConcat(this, fContext, ToM44(&m));
     }
 }
 
-void SkManagedCallbackCanvas::didSetMatrix(const SkMatrix& matrix) {
+void SkManagedCallbackCanvas::didSetM44(const SkM44& m) {
     ANDROIDUI_PRINT_FUNCTION_NAME;
     if (fProcs.fSetMatrix) {
-        fProcs.fSetMatrix(this, fContext, ToMatrix(&matrix));
+        fProcs.fSetMatrix(this, fContext, ToM44(&m));
     }
 }
 
@@ -202,32 +204,42 @@ void SkManagedCallbackCanvas::onDrawPath(const SkPath& path, const SkPaint& pain
     }
 }
 
-void SkManagedCallbackCanvas::onDrawImage(const SkImage* image, SkScalar left, SkScalar top, const SkPaint* paint) {
+void SkManagedCallbackCanvas::onDrawImage2(const SkImage* image, SkScalar left, SkScalar top, const SkSamplingOptions& sampling_options, const SkPaint* paint) {
     ANDROIDUI_PRINT_FUNCTION_NAME;
     if (fProcs.fDrawImage) {
-        fProcs.fDrawImage(this, fContext, ToImage(image), left, top, ToPaint(paint));
+        fProcs.fDrawImage(this, fContext, ToImage(image), left, top, ToSamplingOptions(&sampling_options), ToPaint(paint));
     }
 }
 
-void SkManagedCallbackCanvas::onDrawImageNine(const SkImage* image, const SkIRect& center, const SkRect& dst, const SkPaint* paint) {
-    ANDROIDUI_PRINT_FUNCTION_NAME;
-    if (fProcs.fDrawImageNine) {
-        fProcs.fDrawImageNine(this, fContext, ToImage(image), ToIRect(&center), ToRect(&dst), ToPaint(paint));
-    }
-}
-
-void SkManagedCallbackCanvas::onDrawImageLattice(const SkImage* image, const Lattice& lattice, const SkRect& dst, const SkPaint* paint) {
+void SkManagedCallbackCanvas::onDrawImageLattice2(const SkImage* image, const Lattice& lattice, const SkRect& dst, SkFilterMode filter, const SkPaint* paint) {
     ANDROIDUI_PRINT_FUNCTION_NAME;
     if (fProcs.fDrawImageLattice) {
-        fProcs.fDrawImageLattice(this, fContext, ToImage(image), ToLattice(&lattice), ToRect(&dst), ToPaint(paint));
+        fProcs.fDrawImageLattice(this, fContext, ToImage(image), ToLattice(&lattice), ToRect(&dst), (sk_filter_mode_t)filter, ToPaint(paint));
     }
 }
 
-void SkManagedCallbackCanvas::onDrawImageRect(const SkImage* image, const SkRect* src, const SkRect& dst, const SkPaint* paint, SrcRectConstraint constraint) {
+void SkManagedCallbackCanvas::onDrawImageRect2(const SkImage* image, const SkRect& src, const SkRect& dst, const SkSamplingOptions& sampling_options, const SkPaint* paint, SrcRectConstraint constraint) {
     ANDROIDUI_PRINT_FUNCTION_NAME;
     if (fProcs.fDrawImageRect) {
-        fProcs.fDrawImageRect(this, fContext, ToImage(image), ToRect(src), ToRect(&dst), ToPaint(paint)); // ignore constraint
+        fProcs.fDrawImageRect(this, fContext, ToImage(image), ToRect(&src), ToRect(&dst), ToSamplingOptions(&sampling_options), ToPaint(paint), (sk_src_rect_constraint_t)constraint);
     }
+}
+
+void SkManagedCallbackCanvas::onDrawSlug(const sktext::gpu::Slug* slug) {
+    ANDROIDUI_PRINT_FUNCTION_NAME;
+    if (fProcs.fDrawSlug) {
+        fProcs.fDrawSlug(this, fContext, ToSlug(slug));
+    }
+}
+
+void SkManagedCallbackCanvas::onDrawGlyphRunList(const sktext::GlyphRunList& glyphRunList, const SkPaint& paint) {
+    ANDROIDUI_PRINT_FUNCTION_NAME;
+    sk_sp<SkTextBlob> blob = sk_ref_sp(glyphRunList.blob());
+    if (glyphRunList.blob() == nullptr) {
+        blob = glyphRunList.makeBlob();
+    }
+
+    this->onDrawTextBlob(blob.get(), glyphRunList.origin().x(), glyphRunList.origin().y(), paint);
 }
 
 void SkManagedCallbackCanvas::onDrawTextBlob(const SkTextBlob* blob, SkScalar x, SkScalar y, const SkPaint &paint) {
@@ -278,10 +290,10 @@ void SkManagedCallbackCanvas::onDrawPatch(const SkPoint cubics[12], const SkColo
     }
 }
 
-void SkManagedCallbackCanvas::onDrawAtlas(const SkImage* image, const SkRSXform xform[], const SkRect tex[], const SkColor colors[], int count, SkBlendMode bmode, const SkRect* cull, const SkPaint* paint) {
+void SkManagedCallbackCanvas::onDrawAtlas2(const SkImage* image, const SkRSXform xform[], const SkRect tex[], const SkColor colors[], int count, SkBlendMode bmode, const SkSamplingOptions& sampling_options, const SkRect* cull, const SkPaint* paint) {
     ANDROIDUI_PRINT_FUNCTION_NAME;
     if (fProcs.fDrawAtlas) {
-        fProcs.fDrawAtlas(this, fContext, ToImage(image), ToRSXform(xform), ToRect(tex), colors, count, (sk_blendmode_t)bmode, ToRect(cull), ToPaint(paint));
+        fProcs.fDrawAtlas(this, fContext, ToImage(image), ToRSXform(xform), ToRect(tex), colors, count, (sk_blendmode_t)bmode, ToSamplingOptions(&sampling_options), ToRect(cull), ToPaint(paint));
     }
 }
 
@@ -333,28 +345,16 @@ void SkManagedCallbackCanvas::onDrawEdgeAAQuad(const SkRect& rect, const SkPoint
     //}
 }
 
-void SkManagedCallbackCanvas::onDrawEdgeAAImageSet(const ImageSetEntry set[], int count, const SkPoint dstClips[], const SkMatrix preViewMatrices[], const SkPaint* paint, SrcRectConstraint constraint) {
+void SkManagedCallbackCanvas::onDrawEdgeAAImageSet2(const ImageSetEntry set[], int count, const SkPoint dstClips[], const SkMatrix preViewMatrices[], const SkSamplingOptions& sampling_options, const SkPaint* paint, SrcRectConstraint constraint) {
     printf("%s\n", __PRETTY_FUNCTION__);
     //Iter iter(fList);
     //while (iter.next()) {
-    //    iter->experimental_DrawEdgeAAImageSet(
-    //            set, count, dstClips, preViewMatrices, paint, constraint);
+    //    iter->experimental_DrawEdgeAAImageSet2(
+    //            set, count, dstClips, preViewMatrices, sampling_options, paint, constraint);
     //}
 }
 
-void SkManagedCallbackCanvas::onMarkCTM(const char* name) {
-    printf("%s\n", __PRETTY_FUNCTION__);
-    //Iter iter(fList);
-    //while (iter.next()) {
-    //    iter->markCTM(name);
-    //}
-    this->INHERITED::onMarkCTM(name);
-}
 
-void SkManagedCallbackCanvas::didConcat44(const SkM44& m) {
-    printf("%s\n", __PRETTY_FUNCTION__);
-    //Iter iter(fList);
-    //while (iter.next()) {
-    //    iter->concat(m);
-    //}
+sk_sp<SkSurface> SkManagedCallbackCanvas::onNewSurface(const SkImageInfo&, const SkSurfaceProps&) {
+    return nullptr;
 }

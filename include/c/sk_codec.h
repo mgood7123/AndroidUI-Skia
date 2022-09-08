@@ -43,7 +43,7 @@ SK_C_API int sk_codec_get_repetition_count(sk_codec_t* codec);
 // SK Android Codec
 
 
-SK_C_API sk_android_codec_t* sk_android_codec_new_from_codec(sk_codec_t* codec, sk_android_codec_exif_orientation_behavior_t behaviour);
+SK_C_API sk_android_codec_t* sk_android_codec_new_from_codec(sk_codec_t* codec);
 SK_C_API sk_android_codec_t* sk_android_codec_new_from_data(sk_data_t* data, sk_pngchunkreader_t* chunk_reader);
 SK_C_API sk_android_codec_t* sk_android_codec_new_from_stream(sk_stream_t* stream, sk_pngchunkreader_t* chunk_reader);
 SK_C_API void sk_android_codec_destroy(sk_android_codec_t* codec);

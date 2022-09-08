@@ -58,7 +58,7 @@ sk_maskfilter_t* sk_maskfilter_deserialize(const sk_data_t* data) {
         sk_sp<SkMaskFilter>(
             static_cast<SkMaskFilter*>(
                 SkFlattenable::Deserialize(
-                    SkMaskFilter::GetFlattenableType(),
+                    SkFlattenable::kSkMaskFilter_Type,
                     skdata->data(),
                     skdata->size()
                 ).release()

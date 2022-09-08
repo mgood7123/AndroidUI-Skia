@@ -99,6 +99,7 @@ DEF_CLASS_MAP(SkBitmap, sk_bitmap_t, Bitmap)
 DEF_CLASS_MAP(SkCanvas, sk_canvas_t, Canvas)
 DEF_CLASS_MAP(SkCodec, sk_codec_t, Codec)
 DEF_CLASS_MAP(SkAndroidCodec, sk_android_codec_t, AndroidCodec)
+DEF_CLASS_MAP(SkBlender, sk_blender_t, Blender)
 DEF_CLASS_MAP(SkColorFilter, sk_colorfilter_t, ColorFilter)
 DEF_CLASS_MAP(SkColorSpace, sk_colorspace_t, ColorSpace)
 DEF_CLASS_MAP(SkColorTable, sk_colortable_t, ColorTable)
@@ -115,7 +116,7 @@ DEF_CLASS_MAP(SkFontStyleSet, sk_fontstyleset_t, FontStyleSet)
 DEF_CLASS_MAP(SkImage, sk_image_t, Image)
 DEF_CLASS_MAP(SkImageFilter, sk_imagefilter_t, ImageFilter)
 DEF_CLASS_MAP(SkMaskFilter, sk_maskfilter_t, MaskFilter)
-DEF_CLASS_MAP(SkMatrix44, sk_matrix44_t, Matrix44)
+DEF_CLASS_MAP(SkM44, sk_m44_t, M44)
 DEF_CLASS_MAP(SkMemoryStream, sk_stream_memorystream_t, MemoryStream)
 DEF_CLASS_MAP(SkNWayCanvas, sk_nway_canvas_t, NWayCanvas)
 DEF_CLASS_MAP(SkNoDrawCanvas, sk_nodraw_canvas_t, NoDrawCanvas)
@@ -132,6 +133,7 @@ DEF_CLASS_MAP(SkPngChunkReader, sk_pngchunkreader_t, PngChunkReader)
 DEF_CLASS_MAP(SkRegion, sk_region_t, Region)
 DEF_CLASS_MAP(SkRRect, sk_rrect_t, RRect)
 DEF_CLASS_MAP(SkRuntimeEffect, sk_runtimeeffect_t, RuntimeEffect)
+DEF_CLASS_MAP(SkRuntimeShaderBuilder, sk_runtime_shader_builder_t, RuntimeShaderBuilder)
 DEF_CLASS_MAP(SkShader, sk_shader_t, Shader)
 DEF_CLASS_MAP(SkStream, sk_stream_t, Stream)
 DEF_CLASS_MAP(SkStreamAsset, sk_stream_asset_t, StreamAsset)
@@ -146,6 +148,13 @@ DEF_CLASS_MAP(SkTypeface, sk_typeface_t, Typeface)
 DEF_CLASS_MAP(SkVertices, sk_vertices_t, Vertices)
 DEF_CLASS_MAP(SkWStream, sk_wstream_t, WStream)
 DEF_CLASS_MAP(SkXMLStreamWriter, sk_xmlstreamwriter_t, XMLStreamWriter)
+
+#include "include/core/SkCanvas.h"
+DEF_MAP(sktext::gpu::Slug, sk_slug_t, Slug)
+
+DEF_MAP(SkMipmapMode, sk_mipmap_mode_t, MipmapMode)
+
+#include "src/xml/SkXMLWriter.h"
 DEF_CLASS_MAP(SkXMLWriter, sk_xmlwriter_t, XMLWriter)
 
 DEF_CLASS_MAP(GrDirectContext, gr_direct_context_t, GrDirectContext)
@@ -153,7 +162,8 @@ DEF_CLASS_MAP(GrRecordingContext, gr_recording_context_t, GrRecordingContext)
 DEF_CLASS_MAP(GrBackendTexture, gr_backendtexture_t, GrBackendTexture)
 DEF_CLASS_MAP(GrBackendRenderTarget, gr_backendrendertarget_t, GrBackendRenderTarget)
 
-DEF_CLASS_MAP(GrVkExtensions, gr_vk_extensions_t, GrVkExtensions)
+// using GrVkExtensions = skgpu::VulkanExtensions;
+DEF_MAP(skgpu::VulkanExtensions, gr_vk_extensions_t, GrVkExtensions)
 
 DEF_STRUCT_MAP(skcms_ICCProfile, sk_colorspace_icc_profile_t, ColorSpaceIccProfile)
 DEF_STRUCT_MAP(SkColorSpacePrimaries, sk_colorspace_primaries_t, ColorSpacePrimaries)
@@ -168,6 +178,8 @@ DEF_STRUCT_MAP(SkPoint, sk_point_t, Point)
 DEF_STRUCT_MAP(SkPoint3, sk_point3_t, Point3)
 DEF_STRUCT_MAP(SkRect, sk_rect_t, Rect)
 DEF_STRUCT_MAP(SkRSXform, sk_rsxform_t, RSXform)
+DEF_STRUCT_MAP(SkCubicResampler, sk_cubic_resampler_t, CubicResampler)
+DEF_STRUCT_MAP(SkSamplingOptions, sk_sampling_options_t, SamplingOptions)
 DEF_STRUCT_MAP(SkSize, sk_size_t, Size)
 
 DEF_STRUCT_MAP(GrGLTextureInfo, gr_gl_textureinfo_t, GrGLTextureInfo)
@@ -203,7 +215,6 @@ DEF_MAP(SkAndroidCodec::AndroidOptions, sk_android_codec_options_t, AndroidCodec
 DEF_MAP(SkColor4f, sk_color4f_t, Color4f)
 
 #include "include/core/SkImageFilter.h"
-DEF_MAP(SkImageFilter::CropRect, sk_imagefilter_croprect_t, ImageFilterCropRect)
 
 #include "include/encode/SkJpegEncoder.h"
 DEF_MAP(SkJpegEncoder::Options, sk_jpegencoder_options_t, JpegEncoderOptions)
@@ -377,7 +388,7 @@ DEF_MAP_VK(VkPhysicalDevice, vk_physical_device_t);
 DEF_MAP_VK(VkQueue, vk_queue_t);
 DEF_MAP(VkPhysicalDeviceFeatures, vk_physical_device_features_t, VkPhysicalDeviceFeatures);
 DEF_MAP(VkPhysicalDeviceFeatures2, vk_physical_device_features_2_t, VkPhysicalDeviceFeatures2);
-DEF_MAP(GrVkMemoryAllocator, gr_vk_memory_allocator_t, GrVkMemoryAllocator);
+DEF_MAP(skgpu::VulkanMemoryAllocator, gr_vk_memory_allocator_t, GrVkMemoryAllocator);
 
 static inline GrVkBackendContext AsGrVkBackendContext(const gr_vk_backendcontext_t* context) {
     GrVkBackendContext ctx;

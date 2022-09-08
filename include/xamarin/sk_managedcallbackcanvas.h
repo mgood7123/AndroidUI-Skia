@@ -17,7 +17,7 @@ SK_C_PLUS_PLUS_BEGIN_GUARD
 typedef struct sk_managedcallbackcanvas_t sk_managedcallbackcanvas_t;
 
 #define ANDROIDUI_PROC(name) typedef void (*sk_managedcallbackcanvas_##name) (sk_managedcallbackcanvas_t* d, void* context
-ANDROIDUI_PROC(concat_proc), sk_matrix_t matrix);
+ANDROIDUI_PROC(concat_proc), const sk_m44_t* matrix);
 ANDROIDUI_PROC(clip_rect_proc), const sk_rect_t* rect, const sk_clipop_t op, bool doAA);
 ANDROIDUI_PROC(clip_rrect_proc), const sk_rrect_t* rrect, const sk_clipop_t op, bool doAA);
 ANDROIDUI_PROC(clip_path_proc), const sk_path_t* path, const sk_clipop_t op, bool doAA);
@@ -32,14 +32,14 @@ ANDROIDUI_PROC(draw_points_proc), sk_point_mode_t pointMode, size_t count, const
 ANDROIDUI_PROC(draw_region_proc), const sk_region_t* region, const sk_paint_t* paint);
 ANDROIDUI_PROC(draw_arc_proc), const sk_rect_t* rect, float a, float b, bool c, const sk_paint_t* paint);
 ANDROIDUI_PROC(draw_path_proc), const sk_path_t* path, const sk_paint_t* paint);
-ANDROIDUI_PROC(draw_image_proc), const sk_image_t* image, float x, float y, const sk_paint_t* paint);
-ANDROIDUI_PROC(draw_image_nine_proc), const sk_image_t* image, const sk_irect_t* center, const sk_rect_t* dest, const sk_paint_t* paint);
-ANDROIDUI_PROC(draw_image_lattice_proc), const sk_image_t* image, const sk_lattice_t* lattice, const sk_rect_t* dest, const sk_paint_t* paint);
-ANDROIDUI_PROC(draw_image_rect_proc), const sk_image_t* image, const sk_rect_t* src, const sk_rect_t* dest, const sk_paint_t* paint);
+ANDROIDUI_PROC(draw_image_proc), const sk_image_t* image, float x, float y, const sk_sampling_options_t* sampling_options, const sk_paint_t* paint);
+ANDROIDUI_PROC(draw_image_rect_proc), const sk_image_t* image, const sk_rect_t* src, const sk_rect_t* dest, const sk_sampling_options_t* sampling_options, const sk_paint_t* paint, sk_src_rect_constraint_t constraint);
+ANDROIDUI_PROC(draw_image_lattice_proc), const sk_image_t* image, const sk_lattice_t* lattice, const sk_rect_t* dest, const sk_filter_mode_t filter, const sk_paint_t* paint);
 ANDROIDUI_PROC(draw_text_blob_proc), const sk_textblob_t* blob, float x, float y, const sk_paint_t* paint);
+ANDROIDUI_PROC(draw_slug_proc), const sk_slug_t* slug);
 ANDROIDUI_PROC(draw_drawable_proc), const sk_drawable_t* drawable, sk_matrix_t matrix);
 ANDROIDUI_PROC(draw_vertices_proc), const sk_vertices_t* vertices, sk_blendmode_t mode, const sk_paint_t* paint);
-ANDROIDUI_PROC(draw_atlas_proc), const sk_image_t* atlas, const sk_rsxform_t* xform, const sk_rect_t* tex, const sk_color_t* colors, int count, sk_blendmode_t mode, const sk_rect_t* cullRect, const sk_paint_t* paint);
+ANDROIDUI_PROC(draw_atlas_proc), const sk_image_t* atlas, const sk_rsxform_t* xform, const sk_rect_t* tex, const sk_color_t* colors, int count, sk_blendmode_t mode, const sk_sampling_options_t* sampling_options, const sk_rect_t* cullRect, const sk_paint_t* paint);
 ANDROIDUI_PROC(draw_annotation_proc), const sk_rect_t* rect, const char* key, sk_data_t* value);
 ANDROIDUI_PROC(draw_patch_proc), const sk_point_t* cubics, const sk_color_t* colors, const sk_point_t* texCoords, sk_blendmode_t mode, const sk_paint_t* paint);
 ANDROIDUI_PROC(destroy_proc));
@@ -47,7 +47,7 @@ ANDROIDUI_PROC(flush_proc));
 ANDROIDUI_PROC(restore_proc));
 ANDROIDUI_PROC(save_proc));
 ANDROIDUI_PROC(save_layer_proc), const sk_rect_t* rect, const sk_paint_t* paint);
-ANDROIDUI_PROC(set_matrix_proc), sk_matrix_t matrix);
+ANDROIDUI_PROC(set_matrix_proc), const sk_m44_t* matrix);
 ANDROIDUI_PROC(scale_proc), float x, float y);
 ANDROIDUI_PROC(translate_proc), float x, float y);
 #undef ANDROIDUI_PROC
@@ -66,7 +66,6 @@ typedef struct {
     sk_managedcallbackcanvas_draw_drrect_proc fDrawDRRect;
     sk_managedcallbackcanvas_draw_image_rect_proc fDrawImageRect;
     sk_managedcallbackcanvas_draw_image_lattice_proc fDrawImageLattice;
-    sk_managedcallbackcanvas_draw_image_nine_proc fDrawImageNine;
     sk_managedcallbackcanvas_draw_image_proc fDrawImage;
     sk_managedcallbackcanvas_draw_oval_proc fDrawOval;
     sk_managedcallbackcanvas_draw_paint_proc fDrawPaint;
@@ -76,6 +75,7 @@ typedef struct {
     sk_managedcallbackcanvas_draw_rect_proc fDrawRect;
     sk_managedcallbackcanvas_draw_region_proc fDrawRegion;
     sk_managedcallbackcanvas_draw_rrect_proc fDrawRRect;
+    sk_managedcallbackcanvas_draw_slug_proc fDrawSlug;
     sk_managedcallbackcanvas_draw_text_blob_proc fDrawTextBlob;
     sk_managedcallbackcanvas_draw_vertices_proc fDrawVertices;
     sk_managedcallbackcanvas_destroy_proc fDestroy;

@@ -111,8 +111,8 @@ bool sk_pixmap_read_pixels(const sk_pixmap_t* cpixmap, const sk_imageinfo_t* dst
     return AsPixmap(cpixmap)->readPixels(AsImageInfo(dstInfo), dstPixels, dstRowBytes, srcX, srcY);
 }
 
-bool sk_pixmap_scale_pixels(const sk_pixmap_t* cpixmap, const sk_pixmap_t* dst, sk_filter_quality_t quality) {
-    return AsPixmap(cpixmap)->scalePixels(*AsPixmap(dst), (SkFilterQuality)quality);
+bool sk_pixmap_scale_pixels(const sk_pixmap_t* cpixmap, const sk_pixmap_t* dst, sk_sampling_options_t sampling_options) {
+    return AsPixmap(cpixmap)->scalePixels(*AsPixmap(dst), AsSamplingOptions(sampling_options));
 }
 
 void sk_swizzle_swap_rb(uint32_t* dest, const uint32_t* src, int count) {

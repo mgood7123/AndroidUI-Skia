@@ -37,7 +37,13 @@ void sk_managedcallbackcanvas_delete(sk_managedcallbackcanvas_t* d) {
 
 
 
-void concat(SkManagedCallbackCanvas* d, void* context, sk_matrix_t matrix) {
+void setMatrix(SkManagedCallbackCanvas* d, void* context, const sk_m44_t* matrix) {
+    if (gProcs.fSetMatrix) {
+        gProcs.fSetMatrix(ToManagedCallbackCanvas(d), context, matrix);
+    }
+}
+
+void concat(SkManagedCallbackCanvas* d, void* context, const sk_m44_t* matrix) {
     if (gProcs.fConcat) {
         gProcs.fConcat(ToManagedCallbackCanvas(d), context, matrix);
     }
@@ -52,12 +58,6 @@ void scale(SkManagedCallbackCanvas* d, void* context, float x, float y) {
 void translate(SkManagedCallbackCanvas* d, void* context, float x, float y) {
     if (gProcs.fTranslate) {
         gProcs.fTranslate(ToManagedCallbackCanvas(d), context, x, y);
-    }
-}
-
-void setMatrix(SkManagedCallbackCanvas* d, void* context, sk_matrix_t matrix) {
-    if (gProcs.fSetMatrix) {
-        gProcs.fSetMatrix(ToManagedCallbackCanvas(d), context, matrix);
     }
 }
 
@@ -169,27 +169,27 @@ void drawRegion(SkManagedCallbackCanvas* d, void* context, const sk_region_t* re
     }
 }
 
-void drawImage(SkManagedCallbackCanvas* d, void* context, const sk_image_t* image, float x, float y, const sk_paint_t* paint) {
+void drawImage(SkManagedCallbackCanvas* d, void* context, const sk_image_t* image, float x, float y, const sk_sampling_options_t* sampling_options, const sk_paint_t* paint) {
     if (gProcs.fDrawImage) {
-        gProcs.fDrawImage(ToManagedCallbackCanvas(d), context, image, x, y, paint);
+        gProcs.fDrawImage(ToManagedCallbackCanvas(d), context, image, x, y, sampling_options, paint);
     }
 }
 
-void drawImageRect(SkManagedCallbackCanvas* d, void* context, const sk_image_t* image, const sk_rect_t* src, const sk_rect_t* dest, const sk_paint_t* paint) {
+void drawImageRect(SkManagedCallbackCanvas* d, void* context, const sk_image_t* image, const sk_rect_t* src, const sk_rect_t* dest, const sk_sampling_options_t* sampling_options, const sk_paint_t* paint, sk_src_rect_constraint_t constraint) {
     if (gProcs.fDrawImageRect) {
-        gProcs.fDrawImageRect(ToManagedCallbackCanvas(d), context, image, src, dest, paint);
+        gProcs.fDrawImageRect(ToManagedCallbackCanvas(d), context, image, src, dest, sampling_options, paint, constraint);
     }
 }
 
-void drawImageNine(SkManagedCallbackCanvas* d, void* context, const sk_image_t* image, const sk_irect_t* center, const sk_rect_t* dest, const sk_paint_t* paint) {
-    if (gProcs.fDrawImageNine) {
-        gProcs.fDrawImageNine(ToManagedCallbackCanvas(d), context, image, center, dest, paint);
-    }
-}
-
-void drawImageLattice(SkManagedCallbackCanvas* d, void* context, const sk_image_t* image, const sk_lattice_t* lattice, const sk_rect_t* dest, const sk_paint_t* paint) {
+void drawImageLattice(SkManagedCallbackCanvas* d, void* context, const sk_image_t* image, const sk_lattice_t* lattice, const sk_rect_t* dest, const sk_filter_mode_t filter, const sk_paint_t* paint) {
     if (gProcs.fDrawImageLattice) {
-        gProcs.fDrawImageLattice(ToManagedCallbackCanvas(d), context, image, lattice, dest, paint);
+        gProcs.fDrawImageLattice(ToManagedCallbackCanvas(d), context, image, lattice, dest, filter, paint);
+    }
+}
+
+void drawSlug(SkManagedCallbackCanvas* d, void* context, const sk_slug_t* slug) {
+    if (gProcs.fDrawSlug) {
+        gProcs.fDrawSlug(ToManagedCallbackCanvas(d), context, slug);
     }
 }
 
@@ -211,9 +211,9 @@ void drawVertices(SkManagedCallbackCanvas* d, void* context, const sk_vertices_t
     }
 }
 
-void drawAtlas(SkManagedCallbackCanvas* d, void* context, const sk_image_t* atlas, const sk_rsxform_t* xform, const sk_rect_t* tex, const sk_color_t* colors, int count, sk_blendmode_t mode, const sk_rect_t* cullRect, const sk_paint_t* paint) {
+void drawAtlas(SkManagedCallbackCanvas* d, void* context, const sk_image_t* atlas, const sk_rsxform_t* xform, const sk_rect_t* tex, const sk_color_t* colors, int count, sk_blendmode_t mode, const sk_sampling_options_t* sampling_options, const sk_rect_t* cullRect, const sk_paint_t* paint) {
     if (gProcs.fDrawAtlas) {
-        gProcs.fDrawAtlas(ToManagedCallbackCanvas(d), context, atlas, xform, tex, colors, count, mode, cullRect, paint);
+        gProcs.fDrawAtlas(ToManagedCallbackCanvas(d), context, atlas, xform, tex, colors, count, mode, sampling_options, cullRect, paint);
     }
 }
 
@@ -250,9 +250,9 @@ void sk_managedcallbackcanvas_set_procs(sk_managedcallbackcanvas_procs_t procs) 
     p.fDrawPatch = drawPatch;
     p.fDrawPath = drawPath;
     p.fDrawImage = drawImage;
-    p.fDrawImageNine = drawImageNine;
     p.fDrawImageLattice = drawImageLattice;
     p.fDrawImageRect = drawImageRect;
+    p.fDrawSlug = drawSlug;
     p.fDrawTextBlob = drawTextBlob;
     p.fDrawDrawable = drawDrawable;
     p.fDrawVertices = drawVertices;

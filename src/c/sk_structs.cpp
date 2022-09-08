@@ -18,6 +18,7 @@
 #include "include/core/SkPoint3.h"
 #include "include/core/SkRect.h"
 #include "include/core/SkRSXform.h"
+#include "include/core/SkSamplingOptions.h"
 #include "include/core/SkSize.h"
 #include "include/core/SkSurfaceProps.h"
 #include "include/core/SkTextBlob.h"
@@ -40,36 +41,41 @@
 
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
-#define ASSERT_MSG(SK, C) "ABI changed, you must update the C structure for " TOSTRING(#SK) " to " TOSTRING(#C) "."
+#define ASSERT_MSG(SK, C) "ABI changed, you must update the C structure for " TOSTRING(#C) " in sk_types.h based on the current C++ structure of " TOSTRING(#SK) "."
 
 // custom mappings:
 //  - sk_matrix_t
 //  - sk_document_pdf_metadata_t
 
-static_assert (sizeof (sk_ipoint_t) == sizeof (SkIPoint), ASSERT_MSG(SkIPoint, sk_ipoint_t));
-static_assert (sizeof (sk_point_t) == sizeof (SkPoint), ASSERT_MSG(SkPoint, sk_point_t));
-static_assert (sizeof (sk_irect_t) == sizeof (SkIRect), ASSERT_MSG(SkIRect, sk_irect_t));
-static_assert (sizeof (sk_rect_t) == sizeof (SkRect), ASSERT_MSG(SkRect, sk_rect_t));
-static_assert (sizeof (sk_isize_t) == sizeof (SkISize), ASSERT_MSG(SkISize, sk_isize_t));
-static_assert (sizeof (sk_size_t) == sizeof (SkSize), ASSERT_MSG(SkSize, sk_size_t));
-static_assert (sizeof (sk_point3_t) == sizeof (SkPoint3), ASSERT_MSG(SkPoint3, sk_point3_t));
-static_assert (sizeof (sk_imageinfo_t) == sizeof (SkImageInfo), ASSERT_MSG(SkImageInfo, sk_imageinfo_t));
-static_assert (sizeof (sk_fontmetrics_t) == sizeof (SkFontMetrics), ASSERT_MSG(SkFontMetrics, sk_fontmetrics_t));
-static_assert (sizeof (sk_codec_options_t) == sizeof (SkCodec::Options), ASSERT_MSG(SkCodec::Options, sk_codec_options_t));
-static_assert (sizeof (sk_mask_t) == sizeof (SkMask), ASSERT_MSG(SkMask, sk_mask_t));
-static_assert (sizeof (sk_lattice_t) == sizeof (SkCanvas::Lattice), ASSERT_MSG(SkCanvas::Lattice, sk_lattice_t));
-static_assert (sizeof (sk_time_datetime_t) == sizeof (SkTime::DateTime), ASSERT_MSG(SkTime::DateTime, sk_time_datetime_t));
-static_assert (sizeof (sk_codec_frameinfo_t) == sizeof (SkCodec::FrameInfo), ASSERT_MSG(SkCodec::FrameInfo, sk_codec_frameinfo_t));
-static_assert (sizeof (sk_colorspace_transfer_fn_t) == sizeof (skcms_TransferFunction), ASSERT_MSG(skcms_TransferFunction, sk_colorspace_transfer_fn_t));
-static_assert (sizeof (sk_colorspace_primaries_t) == sizeof (SkColorSpacePrimaries), ASSERT_MSG(SkColorSpacePrimaries, sk_colorspace_primaries_t));
-static_assert (sizeof (sk_highcontrastconfig_t) == sizeof (SkHighContrastConfig), ASSERT_MSG(SkHighContrastConfig, sk_highcontrastconfig_t));
-static_assert (sizeof (sk_pngencoder_options_t) == sizeof (SkPngEncoder::Options), ASSERT_MSG(SkPngEncoder::Options, sk_pngencoder_options_t));
-static_assert (sizeof (sk_jpegencoder_options_t) == sizeof (SkJpegEncoder::Options), ASSERT_MSG(SkJpegEncoder::Options, sk_jpegencoder_options_t));
-static_assert (sizeof (sk_webpencoder_options_t) == sizeof (SkWebpEncoder::Options), ASSERT_MSG(SkWebpEncoder::Options, sk_webpencoder_options_t));
-static_assert (sizeof (sk_textblob_builder_runbuffer_t) == sizeof (SkTextBlobBuilder::RunBuffer), ASSERT_MSG(SkTextBlobBuilder::RunBuffer, sk_textblob_builder_runbuffer_t));
-static_assert (sizeof (sk_rsxform_t) == sizeof (SkRSXform), ASSERT_MSG(SkRSXform, sk_rsxform_t));
-static_assert (sizeof (sk_color4f_t) == sizeof (SkColor4f), ASSERT_MSG(SkColor4f, sk_color4f_t));
-static_assert (sizeof (sk_colorspace_xyz_t) == sizeof (skcms_Matrix3x3), ASSERT_MSG(skcms_Matrix3x3, sk_colorspace_xyz_t));
+#define CHECK(SK, C) static_assert (sizeof (SK) == sizeof (C), ASSERT_MSG(SK, C))
+
+CHECK(SkIPoint, sk_ipoint_t);
+CHECK(SkPoint, sk_point_t);
+CHECK(SkIRect, sk_irect_t);
+CHECK(SkRect, sk_rect_t);
+CHECK(SkISize, sk_isize_t);
+CHECK(SkSize, sk_size_t);
+CHECK(SkPoint3, sk_point3_t);
+CHECK(SkImageInfo, sk_imageinfo_t);
+CHECK(SkFontMetrics, sk_fontmetrics_t);
+CHECK(SkCodec::Options, sk_codec_options_t);
+CHECK(SkMask, sk_mask_t);
+CHECK(SkCanvas::Lattice, sk_lattice_t);
+CHECK(SkTime::DateTime, sk_time_datetime_t);
+CHECK(SkCodec::FrameInfo, sk_codec_frameinfo_t);
+CHECK(skcms_TransferFunction, sk_colorspace_transfer_fn_t);
+CHECK(SkColorSpacePrimaries, sk_colorspace_primaries_t);
+CHECK(SkHighContrastConfig, sk_highcontrastconfig_t);
+CHECK(SkPngEncoder::Options, sk_pngencoder_options_t);
+CHECK(SkJpegEncoder::Options, sk_jpegencoder_options_t);
+CHECK(SkWebpEncoder::Options, sk_webpencoder_options_t);
+CHECK(SkTextBlobBuilder::RunBuffer, sk_textblob_builder_runbuffer_t);
+CHECK(SkRSXform, sk_rsxform_t);
+CHECK(SkColor4f, sk_color4f_t);
+CHECK(skcms_Matrix3x3, sk_colorspace_xyz_t);
+CHECK(SkCubicResampler, sk_cubic_resampler_t);
+CHECK(SkSamplingOptions, sk_sampling_options_t);
+CHECK(SkAndroidCodec::AndroidOptions, sk_android_codec_options_t);
 
 #if SK_SUPPORT_GPU
 static_assert (sizeof (gr_gl_framebufferinfo_t) == sizeof (GrGLFramebufferInfo), ASSERT_MSG(GrGLFramebufferInfo, gr_gl_framebufferinfo_t));

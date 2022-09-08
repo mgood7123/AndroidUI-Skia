@@ -60,6 +60,7 @@
 #include "include/xamarin/sk_managedtracememorydump.h"
 #include "include/xamarin/sk_managedidchangelistener.h"
 #include "include/xamarin/sk_managedidchangelistenerlist.h"
+#include "include/xamarin/sk_paint_extra_info.h"
 
 SK_X_API void** KeepSkiaCSymbols (void);
 
@@ -88,19 +89,19 @@ void** KeepSkiaCSymbols (void)
         (void*)sk_drawable_unref,
         (void*)sk_font_new,
         (void*)sk_image_ref,
-        (void*)sk_imagefilter_croprect_new,
         (void*)sk_mask_alloc_image,
         (void*)sk_maskfilter_ref,
         (void*)sk_matrix_concat,
         (void*)sk_paint_new,
-        (void*)sk_paint_new_with_font,
         (void*)sk_path_new,
         (void*)sk_path_effect_unref,
         (void*)sk_picture_recorder_new,
         (void*)sk_pixmap_destructor,
         (void*)sk_region_new,
         (void*)sk_rrect_new,
-        (void*)sk_runtimeeffect_make,
+        (void*)sk_runtimeeffect_make_for_shader,
+        (void*)sk_runtimeeffect_make_for_color_filter,
+        (void*)sk_runtimeeffect_make_for_blender,
         (void*)sk_shader_ref,
         (void*)sk_stream_asset_destroy,
         (void*)sk_string_new_empty,
@@ -118,6 +119,10 @@ void** KeepSkiaCSymbols (void)
         (void*)skottie_animation_keepalive,
 
         // Xamarin
+        (void*)sk_paint_extra_info_new,
+        (void*)sk_paint_extra_info_new_with_font,
+        (void*)sk_paint_extra_info_new_with_paint,
+        (void*)sk_paint_extra_info_new_with_font_and_paint,
         (void*)sk_managedstream_new,
         (void*)sk_manageddrawable_new,
         (void*)sk_managedpngchunkreader_new,

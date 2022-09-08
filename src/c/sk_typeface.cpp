@@ -10,6 +10,7 @@
 #include "include/core/SkFontMgr.h"
 #include "include/core/SkFontStyle.h"
 #include "include/core/SkTypeface.h"
+#include "include/core/SkStream.h"
 
 #include <memory>
 
@@ -46,10 +47,6 @@ bool sk_typeface_is_fixed_pitch(const sk_typeface_t* typeface) {
 
 sk_typeface_t* sk_typeface_create_default(void) {
     return ToTypeface(SkTypeface::MakeDefault().release());
-}
-
-sk_typeface_t* sk_typeface_ref_default(void) {
-    return ToTypeface(SkTypeface::RefDefault().release());
 }
 
 sk_typeface_t* sk_typeface_create_from_name(const char* familyName, const sk_fontstyle_t* style) {
@@ -149,10 +146,6 @@ sk_typeface_t* sk_typeface_deserialize(const sk_data_t* data) {
 
 // font manager
 
-sk_fontmgr_t* sk_fontmgr_create_default(void) {
-    return ToFontMgr(SkFontMgr::MakeDefault().release());
-}
-
 sk_fontmgr_t* sk_fontmgr_ref_default(void) {
     return ToFontMgr(SkFontMgr::RefDefault().release());
 }
@@ -183,10 +176,6 @@ sk_typeface_t* sk_fontmgr_match_family_style(sk_fontmgr_t* fontmgr, const char* 
 
 sk_typeface_t* sk_fontmgr_match_family_style_character(sk_fontmgr_t* fontmgr, const char* familyName, sk_fontstyle_t* style, const char** bcp47, int bcp47Count, int32_t character) {
     return ToTypeface(AsFontMgr(fontmgr)->matchFamilyStyleCharacter(familyName, *AsFontStyle(style), bcp47, bcp47Count, character));
-}
-
-sk_typeface_t* sk_fontmgr_match_face_style(sk_fontmgr_t* fontmgr, const sk_typeface_t* face, sk_fontstyle_t* style) {
-    return ToTypeface(AsFontMgr(fontmgr)->matchFaceStyle(AsTypeface(face), *AsFontStyle(style)));
 }
 
 sk_typeface_t* sk_fontmgr_create_from_data(sk_fontmgr_t* fontmgr, sk_data_t* data, int index) {

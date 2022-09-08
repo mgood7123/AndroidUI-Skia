@@ -10,8 +10,10 @@
 #include "src/c/sk_types_priv.h"
 
 #include "include/core/SkColorSpace.h"
+#include "include/core/SkRect.h"
+#include "include/core/SkRRect.h"
 #include "include/core/SkImage.h"
-#include "include/core/SkMatrix44.h"
+#include "include/core/SkM44.h"
 #include "include/core/SkPathMeasure.h"
 #include "include/core/SkRegion.h"
 #include "include/core/SkShader.h"
@@ -20,10 +22,11 @@
 #include "include/core/SkVertices.h"
 #include "include/effects/Sk1DPathEffect.h"
 #include "include/effects/SkBlurMaskFilter.h"
-#include "include/effects/SkDisplacementMapEffect.h"
-#include "include/effects/SkDropShadowImageFilter.h"
+ //#include "include/effects/SkDisplacementMapEffect.h"
+//#include "include/effects/SkDropShadowImageFilter.h"
 #include "include/effects/SkHighContrastFilter.h"
-#include "include/effects/SkMatrixConvolutionImageFilter.h"
+#include "include/effects/SkImageFilters.h"
+//#include "include/effects/SkMatrixConvolutionImageFilter.h"
 #include "include/effects/SkTrimPathEffect.h"
 #include "include/encode/SkJpegEncoder.h"
 #include "include/encode/SkPngEncoder.h"
@@ -39,7 +42,7 @@
 
 #if __cplusplus >= 199711L
 
-#define ASSERT_MSG(SK, C) "ABI changed, you must write a enumeration mapper for " SK_TO_STRING(#SK) " to " SK_TO_STRING(#C) "."
+#define ASSERT_MSG(SK, C) "ABI changed, you must update the C enum for " SK_TO_STRING(#C) " in sk_types.h based on the current C++ enum of " SK_TO_STRING(#SK) "."
 
 // sk_font_style_slant_t
 static_assert ((int)SkFontStyle::Slant::kUpright_Slant   == (int)UPRIGHT_SK_FONT_STYLE_SLANT,   ASSERT_MSG(SkFontStyle::Slant, sk_font_style_slant_t));
@@ -89,19 +92,6 @@ static_assert ((int)SkTextEncoding::kUTF8      == (int)UTF8_SK_TEXT_ENCODING,   
 static_assert ((int)SkTextEncoding::kUTF16     == (int)UTF16_SK_TEXT_ENCODING,      ASSERT_MSG(SkTextEncoding, sk_text_encoding_t));
 static_assert ((int)SkTextEncoding::kUTF32     == (int)UTF32_SK_TEXT_ENCODING,      ASSERT_MSG(SkTextEncoding, sk_text_encoding_t));
 static_assert ((int)SkTextEncoding::kGlyphID   == (int)GLYPH_ID_SK_TEXT_ENCODING,   ASSERT_MSG(SkTextEncoding, sk_text_encoding_t));
-
-// sk_filter_quality_t
-static_assert ((int)SkFilterQuality::kNone_SkFilterQuality     == (int)NONE_SK_FILTER_QUALITY,     ASSERT_MSG(SkFilterQuality, sk_filter_quality_t));
-static_assert ((int)SkFilterQuality::kLow_SkFilterQuality      == (int)LOW_SK_FILTER_QUALITY,      ASSERT_MSG(SkFilterQuality, sk_filter_quality_t));
-static_assert ((int)SkFilterQuality::kMedium_SkFilterQuality   == (int)MEDIUM_SK_FILTER_QUALITY,   ASSERT_MSG(SkFilterQuality, sk_filter_quality_t));
-static_assert ((int)SkFilterQuality::kHigh_SkFilterQuality     == (int)HIGH_SK_FILTER_QUALITY,     ASSERT_MSG(SkFilterQuality, sk_filter_quality_t));
-
-// sk_crop_rect_flags_t
-static_assert ((int)SkImageFilter::CropRect::CropEdge::kHasLeft_CropEdge     == (int)HAS_LEFT_SK_CROP_RECT_FLAG,     ASSERT_MSG(SkImageFilter::CropRect::CropEdge, sk_crop_rect_flags_t));
-static_assert ((int)SkImageFilter::CropRect::CropEdge::kHasTop_CropEdge      == (int)HAS_TOP_SK_CROP_RECT_FLAG,      ASSERT_MSG(SkImageFilter::CropRect::CropEdge, sk_crop_rect_flags_t));
-static_assert ((int)SkImageFilter::CropRect::CropEdge::kHasWidth_CropEdge    == (int)HAS_WIDTH_SK_CROP_RECT_FLAG,    ASSERT_MSG(SkImageFilter::CropRect::CropEdge, sk_crop_rect_flags_t));
-static_assert ((int)SkImageFilter::CropRect::CropEdge::kHasHeight_CropEdge   == (int)HAS_HEIGHT_SK_CROP_RECT_FLAG,   ASSERT_MSG(SkImageFilter::CropRect::CropEdge, sk_crop_rect_flags_t));
-static_assert ((int)SkImageFilter::CropRect::CropEdge::kHasAll_CropEdge      == (int)HAS_ALL_SK_CROP_RECT_FLAG,      ASSERT_MSG(SkImageFilter::CropRect::CropEdge, sk_crop_rect_flags_t));
 
 // sk_blendmode_t
 static_assert ((int)SkBlendMode::kClear        == (int)CLEAR_SK_BLENDMODE,        ASSERT_MSG(SkBlendMode, sk_blendmode_t));
@@ -316,13 +306,6 @@ static_assert ((int)SkMask::Format::kARGB32_Format   == (int)ARGB32_SK_MASK_FORM
 static_assert ((int)SkMask::Format::kLCD16_Format    == (int)LCD16_SK_MASK_FORMAT,     ASSERT_MSG(SkMask::Format, sk_mask_format_t));
 static_assert ((int)SkMask::Format::kSDF_Format      == (int)SDF_SK_MASK_FORMAT,       ASSERT_MSG(SkMask::Format, sk_mask_format_t));
 
-// sk_matrix44_type_mask_t
-static_assert ((int)SkMatrix44::kIdentity_Mask      == (int)IDENTITY_SK_MATRIX44_TYPE_MASK,      ASSERT_MSG(SkMatrix44::TypeMask, sk_matrix44_type_mask_t));
-static_assert ((int)SkMatrix44::kTranslate_Mask     == (int)TRANSLATE_SK_MATRIX44_TYPE_MASK,     ASSERT_MSG(SkMatrix44::TypeMask, sk_matrix44_type_mask_t));
-static_assert ((int)SkMatrix44::kScale_Mask         == (int)SCALE_SK_MATRIX44_TYPE_MASK,         ASSERT_MSG(SkMatrix44::TypeMask, sk_matrix44_type_mask_t));
-static_assert ((int)SkMatrix44::kAffine_Mask        == (int)AFFINE_SK_MATRIX44_TYPE_MASK,        ASSERT_MSG(SkMatrix44::TypeMask, sk_matrix44_type_mask_t));
-static_assert ((int)SkMatrix44::kPerspective_Mask   == (int)PERSPECTIVE_SK_MATRIX44_TYPE_MASK,   ASSERT_MSG(SkMatrix44::TypeMask, sk_matrix44_type_mask_t));
-
 // sk_vertices_vertex_mode_t
 static_assert ((int)SkVertices::VertexMode::kTriangles_VertexMode       == (int)TRIANGLES_SK_VERTICES_VERTEX_MODE,        ASSERT_MSG(SkVertices::VertexMode, sk_vertices_vertex_mode_t));
 static_assert ((int)SkVertices::VertexMode::kTriangleStrip_VertexMode   == (int)TRIANGLE_STRIP_SK_VERTICES_VERTEX_MODE,   ASSERT_MSG(SkVertices::VertexMode, sk_vertices_vertex_mode_t));
@@ -379,6 +362,23 @@ static_assert ((int)SkRRect::Corner::kLowerLeft_Corner    == (int)LOWER_LEFT_SK_
 // skottie_animation_renderflags_t
 static_assert ((int)skottie::Animation::kSkipTopLevelIsolation      == (int)SKIP_TOP_LEVEL_ISOLATION,      ASSERT_MSG(skottie::Animation, skottie_animation_renderflags_t));
 static_assert ((int)skottie::Animation::kDisableTopLevelClipping    == (int)DISABLE_TOP_LEVEL_CLIPPING,    ASSERT_MSG(skottie::Animation, skottie_animation_renderflags_t));
+
+// sk_filter_mode_t
+static_assert ((int)SkFilterMode::kNearest == (int)NEAREST_FILTER_MODE, ASSERT_MSG(SkFilterMode, sk_filter_mode_t));
+static_assert ((int)SkFilterMode::kLinear == (int)LINEAR_FILTER_MODE, ASSERT_MSG(SkFilterMode, sk_filter_mode_t));
+
+// sk_mipmap_mode_t
+static_assert ((int)SkMipmapMode::kNone == (int)NONE_MIPMAP_MODE, ASSERT_MSG(SkMipmapMode, sk_mipmap_mode_t));
+static_assert ((int)SkMipmapMode::kNearest == (int)NEAREST_MIPMAP_MODE, ASSERT_MSG(SkMipmapMode, sk_mipmap_mode_t));
+static_assert ((int)SkMipmapMode::kLinear == (int)LINEAR_MIPMAP_MODE, ASSERT_MSG(SkMipmapMode, sk_mipmap_mode_t));
+
+// sk_codecanimation_blend_t
+static_assert ((int)SkCodecAnimation::Blend::kSrcOver == (int)SRC_OVER_BLEND_MODE_CODEC, ASSERT_MSG(SkCodecAnimation::Blend, sk_codecanimation_blend_t));
+static_assert ((int)SkCodecAnimation::Blend::kSrc == (int)SRC_BLEND_MODE_CODEC, ASSERT_MSG(SkCodecAnimation::Blend, sk_codecanimation_blend_t));
+
+// sk_canvas_src_rect_constraint_t
+static_assert ((int)SkCanvas::SrcRectConstraint::kStrict_SrcRectConstraint == (int)STRICT_SRC_RECT_CONSTRAINT, ASSERT_MSG(SkCanvas::SrcRectConstraint, sk_src_rect_constraint_t));
+static_assert ((int)SkCanvas::SrcRectConstraint::kFast_SrcRectConstraint == (int)FAST_SRC_RECT_CONSTRAINT, ASSERT_MSG(SkCanvas::SrcRectConstraint, sk_src_rect_constraint_t));
 
 #if SK_SUPPORT_GPU
 

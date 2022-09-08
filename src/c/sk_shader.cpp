@@ -46,7 +46,7 @@ sk_shader_t* sk_shader_deserialize(const sk_data_t* data) {
         sk_sp<SkShader>(
             static_cast<SkShader*>(
                 SkFlattenable::Deserialize(
-                    SkFlattenable::kSkShaderBase_Type,
+                    SkFlattenable::kSkShader_Type,
                     skdata->data(),
                     skdata->size()
                 ).release()
@@ -74,7 +74,36 @@ sk_shader_t* sk_shader_new_blend(sk_blendmode_t mode, const sk_shader_t* dst, co
 }
 
 sk_shader_t* sk_shader_new_lerp(float t, const sk_shader_t* dst, const sk_shader_t* src) {
-    return ToShader(SkShaders::Lerp(t, sk_ref_sp(AsShader(dst)), sk_ref_sp(AsShader(src))).release());
+    float weight = t;
+    auto shader_dst = sk_ref_sp(AsShader(dst));
+    auto shader_src = sk_ref_sp(AsShader(src));
+
+    if (SkScalarIsNaN(weight)) {
+        sk_sp<SkShader> result = nullptr;
+        return ToShader(result.release());
+    }
+    if (dst == src || weight <= 0) {
+        return ToShader(shader_dst.release());
+    }
+    if (weight >= 1) {
+        return ToShader(shader_src.release());
+    }
+
+    SkString sksl;
+    sksl.appendf("uniform shader a;");
+    sksl.appendf("uniform shader b;");
+    sksl.appendf("uniform half w;");
+    sksl.appendf("half4 main(float2 xy) { return mix(sample(a, xy), sample(b, xy), w); }");
+
+    sk_sp<SkRuntimeEffect> effect = SkRuntimeEffect::MakeForShader(sksl).effect;
+    SkASSERT(effect);
+    sk_sp<SkShader> inputs[] = { shader_dst, shader_src };
+    sk_sp<SkShader> result = effect->makeShader(
+        SkData::MakeWithCopy(&weight, sizeof(weight)),
+        inputs,
+        SK_ARRAY_COUNT(inputs),
+        nullptr);
+    return ToShader(result.release());
 }
 
 // SkGradientShader
@@ -145,6 +174,8 @@ sk_shader_t* sk_shader_new_perlin_noise_turbulence(float baseFrequencyX, float b
     return ToShader(SkPerlinNoiseShader::MakeTurbulence(baseFrequencyX, baseFrequencyY,  numOctaves,  seed,  AsISize(tileSize)).release());
 }
 
-sk_shader_t* sk_shader_new_perlin_noise_improved_noise(float baseFrequencyX, float baseFrequencyY, int numOctaves, float z) {
-    return ToShader(SkPerlinNoiseShader::MakeImprovedNoise(baseFrequencyX, baseFrequencyY, numOctaves, z).release());
-}
+
+//sk_shader_t* sk_shader_new_perlin_noise_improved_noise(float baseFrequencyX, float baseFrequencyY, int numOctaves, float z) {
+//
+//    return ToShader(SkPerlinNoiseShader::MakeImprovedNoise(baseFrequencyX, baseFrequencyY, numOctaves, z).release());
+//}

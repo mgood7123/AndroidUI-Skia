@@ -168,15 +168,7 @@ typedef struct {
     float persp0, persp1, persp2;
 } sk_matrix_t;
 
-typedef struct sk_matrix44_t sk_matrix44_t;
-
-typedef enum {
-    IDENTITY_SK_MATRIX44_TYPE_MASK = 0,
-    TRANSLATE_SK_MATRIX44_TYPE_MASK = 0x01,
-    SCALE_SK_MATRIX44_TYPE_MASK = 0x02,
-    AFFINE_SK_MATRIX44_TYPE_MASK = 0x04,
-    PERSPECTIVE_SK_MATRIX44_TYPE_MASK = 0x08
-} sk_matrix44_type_mask_t;
+typedef struct sk_m44_t sk_m44_t;
 
 typedef enum {
     IDENTITY_SK_MATRIX_TYPE_MASK = 0,
@@ -383,10 +375,10 @@ typedef struct sk_bitmapallocator_t sk_bitmapallocator_t;
 typedef struct sk_pixmap_t sk_pixmap_t;
 typedef struct sk_pngchunkreader_t sk_pngchunkreader_t;
 typedef struct sk_colorfilter_t sk_colorfilter_t;
+typedef struct sk_blender_t sk_blender_t;
 // placed here to help seperate in PR
 typedef struct sk_pixelref_t sk_pixelref_t;
 typedef struct sk_imagefilter_t sk_imagefilter_t;
-typedef struct sk_imagefilter_croprect_t sk_imagefilter_croprect_t;
 
 typedef struct sk_idchangelistener_t sk_idchangelistener_t;
 typedef struct sk_idchangelistenerlist_t sk_idchangelistenerlist_t;
@@ -466,13 +458,32 @@ typedef enum {
 } sk_filter_quality_t;
 
 typedef enum {
-    HAS_NONE_SK_CROP_RECT_FLAG   = 0x00,
-    HAS_LEFT_SK_CROP_RECT_FLAG   = 0x01,
-    HAS_TOP_SK_CROP_RECT_FLAG    = 0x02,
-    HAS_WIDTH_SK_CROP_RECT_FLAG  = 0x04,
-    HAS_HEIGHT_SK_CROP_RECT_FLAG = 0x08,
-    HAS_ALL_SK_CROP_RECT_FLAG    = 0x0F,
-} sk_crop_rect_flags_t;
+    NEAREST_FILTER_MODE,
+    LINEAR_FILTER_MODE
+} sk_filter_mode_t;
+
+typedef enum {
+    STRICT_SRC_RECT_CONSTRAINT,
+    FAST_SRC_RECT_CONSTRAINT
+} sk_src_rect_constraint_t;
+
+typedef enum {
+    NONE_MIPMAP_MODE,
+    NEAREST_MIPMAP_MODE,
+    LINEAR_MIPMAP_MODE
+} sk_mipmap_mode_t;
+
+typedef struct {
+    float D, C;
+} sk_cubic_resampler_t;
+
+typedef struct {
+    int maxAniso;
+    bool useCubic;
+    sk_cubic_resampler_t cubic;
+    sk_filter_mode_t filter;
+    sk_mipmap_mode_t mipmap;
+} sk_sampling_options_t;
 
 typedef enum {
     R_SK_COLOR_CHANNEL,
@@ -567,14 +578,11 @@ typedef enum {
     BOTTOM_UP_SK_CODEC_SCANLINE_ORDER,
 } sk_codec_scanline_order_t;
 
-typedef enum {
-    kIgnore,
-    kRespect,
-} sk_android_codec_exif_orientation_behavior_t;
-
 typedef struct {
     sk_codec_zero_initialized_t fZeroInitialized;
     sk_irect_t* fSubset;
+    int fFrameIndex;
+    int fPriorFrame;
     int fSampleSize;
 } sk_android_codec_options_t;
 
@@ -913,17 +921,25 @@ typedef struct {
 } sk_imageinfo_t;
 
 typedef enum {
-    KEEP_SK_CODEC_ANIMATION_DISPOSAL_METHOD               = 1,
-    RESTORE_BG_COLOR_SK_CODEC_ANIMATION_DISPOSAL_METHOD   = 2,
-    RESTORE_PREVIOUS_SK_CODEC_ANIMATION_DISPOSAL_METHOD   = 3,
+    KEEP_SK_CODEC_ANIMATION_DISPOSAL_METHOD = 1,
+    RESTORE_BG_COLOR_SK_CODEC_ANIMATION_DISPOSAL_METHOD = 2,
+    RESTORE_PREVIOUS_SK_CODEC_ANIMATION_DISPOSAL_METHOD = 3,
 } sk_codecanimation_disposalmethod_t;
+
+typedef enum {
+    SRC_OVER_BLEND_MODE_CODEC,
+    SRC_BLEND_MODE_CODEC,
+} sk_codecanimation_blend_t;
 
 typedef struct {
     int fRequiredFrame;
     int fDuration;
     bool fFullyReceived;
     sk_alphatype_t fAlphaType;
+    bool fHasAlphaWithinBounds;
     sk_codecanimation_disposalmethod_t fDisposalMethod;
+    sk_codecanimation_blend_t fBlend;
+    sk_irect_t fFrameRect;
 } sk_codec_frameinfo_t;
 
 typedef struct sk_xmlstreamwriter_t sk_xmlstreamwriter_t;
@@ -1053,6 +1069,7 @@ typedef enum {
     LOWER_LEFT_SK_RRECT_CORNER,
 } sk_rrect_corner_t;
 
+typedef struct sk_slug_t sk_slug_t;
 typedef struct sk_textblob_t sk_textblob_t;
 typedef struct sk_textblob_builder_t sk_textblob_builder_t;
 
@@ -1073,6 +1090,7 @@ typedef struct {
 typedef struct sk_tracememorydump_t sk_tracememorydump_t;
 
 typedef struct sk_runtimeeffect_t sk_runtimeeffect_t;
+typedef struct sk_runtime_shader_builder_t sk_runtime_shader_builder_t;
 typedef struct sk_runtimeeffect_uniform_t sk_runtimeeffect_uniform_t;
 
 /*

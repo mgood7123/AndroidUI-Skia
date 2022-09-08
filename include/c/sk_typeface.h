@@ -23,7 +23,6 @@ SK_C_API int sk_typeface_get_font_width(const sk_typeface_t* typeface);
 SK_C_API sk_font_style_slant_t sk_typeface_get_font_slant(const sk_typeface_t* typeface);
 SK_C_API bool sk_typeface_is_fixed_pitch(const sk_typeface_t* typeface);
 SK_C_API sk_typeface_t* sk_typeface_create_default(void);
-SK_C_API sk_typeface_t* sk_typeface_ref_default(void);
 SK_C_API sk_typeface_t* sk_typeface_create_from_name(const char* familyName, const sk_fontstyle_t* style);
 SK_C_API sk_typeface_t* sk_typeface_create_from_file(const char* path, int index);
 SK_C_API sk_typeface_t* sk_typeface_create_from_stream(sk_stream_asset_t* stream, int index);
@@ -47,7 +46,6 @@ SK_C_API sk_typeface_t* sk_typeface_deserialize(const sk_data_t* data);
 
 // font manager
 
-SK_C_API sk_fontmgr_t* sk_fontmgr_create_default(void);
 SK_C_API sk_fontmgr_t* sk_fontmgr_ref_default(void);
 SK_C_API void sk_fontmgr_unref(sk_fontmgr_t*);
 SK_C_API int sk_fontmgr_count_families(sk_fontmgr_t*);
@@ -56,7 +54,6 @@ SK_C_API sk_fontstyleset_t* sk_fontmgr_create_styleset(sk_fontmgr_t*, int index)
 SK_C_API sk_fontstyleset_t* sk_fontmgr_match_family(sk_fontmgr_t*, const char* familyName);
 SK_C_API sk_typeface_t* sk_fontmgr_match_family_style(sk_fontmgr_t*, const char* familyName, sk_fontstyle_t* style);
 SK_C_API sk_typeface_t* sk_fontmgr_match_family_style_character(sk_fontmgr_t*, const char* familyName, sk_fontstyle_t* style, const char** bcp47, int bcp47Count, int32_t character);
-SK_C_API sk_typeface_t* sk_fontmgr_match_face_style(sk_fontmgr_t*, const sk_typeface_t* face, sk_fontstyle_t* style);
 SK_C_API sk_typeface_t* sk_fontmgr_create_from_data(sk_fontmgr_t*, sk_data_t* data, int index);
 SK_C_API sk_typeface_t* sk_fontmgr_create_from_stream(sk_fontmgr_t*, sk_stream_asset_t* stream, int index);
 SK_C_API sk_typeface_t* sk_fontmgr_create_from_file(sk_fontmgr_t*, const char* path, int index);

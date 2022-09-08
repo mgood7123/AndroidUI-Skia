@@ -17,34 +17,6 @@
 
 #include "src/c/sk_types_priv.h"
 
-sk_paint_t* sk_paint_new_with_font(const sk_font_t* font) {
-    return ToPaint(new SkPaint(AsFont(font)));
-}
-
-sk_font_t* sk_paint_make_font(sk_paint_t* paint) {
-    return ToFont(AsPaint(paint)->makeFont());
-}
-
-sk_font_t* sk_paint_get_font(sk_paint_t* paint) {
-    return ToFont(AsPaint(paint)->getFont());
-}
-
-void sk_paint_set_text_align(sk_paint_t* paint, sk_text_align_t align) {
-    AsPaint(paint)->setTextAlign((SkPaint::Align)align);
-}
-
-sk_text_align_t sk_paint_get_text_align(const sk_paint_t* paint) {
-    return (sk_text_align_t)AsPaint(paint)->getTextAlign();
-}
-
-void sk_paint_set_text_encoding(sk_paint_t* paint, sk_text_encoding_t encoding) {
-    AsPaint(paint)->setTextEncoding((SkTextEncoding)encoding);
-}
-
-sk_text_encoding_t sk_paint_get_text_encoding(const sk_paint_t* paint) {
-    return (sk_text_encoding_t)AsPaint(paint)->getTextEncoding();
-}
-
 sk_paint_t* sk_paint_new(void) {
     return ToPaint(new SkPaint());
 }

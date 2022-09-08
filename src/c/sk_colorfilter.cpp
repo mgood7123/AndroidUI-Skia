@@ -62,7 +62,7 @@ sk_colorfilter_t* sk_colorfilter_deserialize(const sk_data_t* data) {
         sk_sp<SkColorFilter>(
             static_cast<SkColorFilter*>(
                 SkFlattenable::Deserialize(
-                    SkColorFilter::GetFlattenableType(),
+                    SkFlattenable::kSkColorFilter_Type,
                     skdata->data(),
                     skdata->size()
                 ).release()

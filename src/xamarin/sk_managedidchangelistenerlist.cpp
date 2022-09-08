@@ -39,21 +39,20 @@ void sk_managedidchangelistenerlist_delete(sk_idchangelistenerlist_t* d) {
     delete AsSkManagedIDChangeListenerList(d);
 }
 
-void sk_managedidchangelistenerlist_add(sk_idchangelistenerlist_t* d, sk_idchangelistener_t* listener, bool single_threaded) {
-    AsSkManagedIDChangeListenerList(d)->add(sk_sp<SkManagedIDChangeListener>(AsSkManagedIDChangeListener(listener)),
-                                                single_threaded);
+void sk_managedidchangelistenerlist_add(sk_idchangelistenerlist_t* d, sk_idchangelistener_t* listener) {
+    AsSkManagedIDChangeListenerList(d)->add(sk_sp<SkManagedIDChangeListener>(AsSkManagedIDChangeListener(listener)));
 }
 
 int32_t sk_managedidchangelistenerlist_count(sk_idchangelistenerlist_t* d) {
     return AsSkManagedIDChangeListenerList(d)->count();
 }
 
-void sk_managedidchangelistenerlist_changed(sk_idchangelistenerlist_t* d, bool single_threaded) {
-    AsSkManagedIDChangeListenerList(d)->changed(single_threaded);
+void sk_managedidchangelistenerlist_changed(sk_idchangelistenerlist_t* d) {
+    AsSkManagedIDChangeListenerList(d)->changed();
 }
 
-void sk_managedidchangelistenerlist_reset(sk_idchangelistenerlist_t* d, bool single_threaded) {
-    AsSkManagedIDChangeListenerList(d)->reset(single_threaded);
+void sk_managedidchangelistenerlist_reset(sk_idchangelistenerlist_t* d) {
+    AsSkManagedIDChangeListenerList(d)->reset();
 }
 
 void sk_managedidchangelistenerlist_set_procs(sk_idchangelistenerlist_procs_t procs) {

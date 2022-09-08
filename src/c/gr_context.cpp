@@ -8,8 +8,8 @@
  */
 
 #include "include/c/gr_context.h"
-#include "src/gpu/GrRecordingContextPriv.h"
-#include "src/gpu/GrCaps.h"
+#include "src/gpu/ganesh/GrRecordingContextPriv.h"
+#include "src/gpu/ganesh/GrCaps.h"
 #include "include/core/SkSurface.h"
 
 

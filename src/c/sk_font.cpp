@@ -15,6 +15,10 @@
 
 #include "src/c/sk_types_priv.h"
 
+#include "src/core/SkStrikeCache.h"
+#include "src/core/SkStrikeSpec.h"
+#include "src/utils/SkUTF.h"
+
 // sk_font_t
 
 sk_font_t* sk_font_new(void) {
@@ -145,8 +149,88 @@ void sk_font_measure_text_no_return(const sk_font_t* font, const void* text, siz
     *measuredWidth = sk_font_measure_text(font, text, byteLength, encoding, bounds, paint);
 }
 
+static inline SkUnichar SkUTFN_Next(SkTextEncoding enc, const void** ptr, const void* stop) {
+    switch (enc) {
+    case SkTextEncoding::kUTF8:
+        return SkUTF::NextUTF8((const char**)ptr, (const char*)stop);
+    case SkTextEncoding::kUTF16:
+        return SkUTF::NextUTF16((const uint16_t**)ptr, (const uint16_t*)stop);
+    case SkTextEncoding::kUTF32:
+        return SkUTF::NextUTF32((const int32_t**)ptr, (const int32_t*)stop);
+    default: SkDEBUGFAIL("unknown text encoding"); return -1;
+    }
+}
+
 size_t sk_font_break_text(const sk_font_t* font, const void* text, size_t byteLength, sk_text_encoding_t encoding, float maxWidth, float* measuredWidth, const sk_paint_t* paint) {
-    return AsFont(font)->breakText(text, byteLength, (SkTextEncoding)encoding, maxWidth, measuredWidth, AsPaint(paint));
+    const SkFont* skfont = AsFont(font);
+    SkTextEncoding skencoding = (SkTextEncoding)encoding;
+    const SkPaint* skpaint = AsPaint(paint);
+
+    if (0 == byteLength || 0 >= maxWidth) {
+        if (measuredWidth) {
+            *measuredWidth = 0;
+        }
+        return 0;
+    }
+    if (0 == skfont->getSize()) {
+        if (measuredWidth) {
+            *measuredWidth = 0;
+        }
+        return byteLength;
+    }
+
+    SkASSERT(text != nullptr);
+
+    auto [strikeSpec, scale] = SkStrikeSpec::MakeCanonicalized(*skfont, skpaint);
+
+    SkBulkGlyphMetrics metrics{ strikeSpec };
+
+    // adjust max instead of each glyph
+    if (scale) {
+        maxWidth /= scale;
+    }
+
+    SkScalar width = 0;
+
+    const char* start = (const char*)text;
+    const char* stop = start + byteLength;
+    while (start < stop) {
+        const char* curr = start;
+
+        // read the glyph and move the pointer
+        SkGlyphID glyphID;
+        if (skencoding == SkTextEncoding::kGlyphID) {
+            auto glyphs = (const uint16_t*)start;
+            glyphID = *glyphs;
+            glyphs++;
+            start = (const char*)glyphs;
+        }
+        else {
+            auto t = (const void*)start;
+            auto unichar = SkUTFN_Next(skencoding, &t, stop);
+            start = (const char*)t;
+            glyphID = skfont->getTypefaceOrDefault()->unicharToGlyph(unichar);
+        }
+
+        auto glyph = metrics.glyph(glyphID);
+
+        SkScalar x = glyph->advanceX();
+        if ((width += x) > maxWidth) {
+            width -= x;
+            start = curr;
+            break;
+        }
+    }
+
+    if (measuredWidth) {
+        if (scale) {
+            width *= scale;
+        }
+        *measuredWidth = width;
+    }
+
+    // return the number of bytes measured
+    return start - stop + byteLength;
 }
 
 void sk_font_get_widths_bounds(const sk_font_t* font, const uint16_t glyphs[], int count, float widths[], sk_rect_t bounds[], const sk_paint_t* paint) {
@@ -192,6 +276,27 @@ void sk_text_utils_get_path(const void* text, size_t length, sk_text_encoding_t 
     SkTextUtils::GetPath(text, length, (SkTextEncoding)encoding, x, y, *AsFont(font), AsPath(path));
 }
 
+void GetPosPath(const void* text, size_t length, SkTextEncoding encoding,
+    const SkPoint pos[], const SkFont& font, SkPath* path) {
+    SkAutoToGlyphs ag(font, text, length, encoding);
+
+    struct Rec {
+        SkPath* fDst;
+        const SkPoint* fPos;
+    } rec = { path, pos };
+
+    path->reset();
+    font.getPaths(ag.glyphs(), ag.count(), [](const SkPath* src, const SkMatrix& mx, void* ctx) {
+        Rec* rec = (Rec*)ctx;
+        if (src) {
+            SkMatrix m(mx);
+            m.postTranslate(rec->fPos->fX, rec->fPos->fY);
+            rec->fDst->addPath(*src, m);
+        }
+        rec->fPos += 1;
+        }, &rec);
+}
+
 void sk_text_utils_get_pos_path(const void* text, size_t length, sk_text_encoding_t encoding, const sk_point_t pos[], const sk_font_t* font, sk_path_t* path) {
-    SkTextUtils::GetPosPath(text, length, (SkTextEncoding)encoding, AsPoint(pos), *AsFont(font), AsPath(path));
+    GetPosPath(text, length, (SkTextEncoding)encoding, AsPoint(pos), *AsFont(font), AsPath(path));
 }

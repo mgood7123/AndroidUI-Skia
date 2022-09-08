@@ -14,13 +14,6 @@
 
 SK_C_PLUS_PLUS_BEGIN_GUARD
 
-SK_C_API sk_paint_t* sk_paint_new_with_font(const sk_font_t* font);
-SK_C_API sk_font_t* sk_paint_make_font(sk_paint_t* paint);
-SK_C_API sk_font_t* sk_paint_get_font(sk_paint_t* paint);
-SK_C_API void sk_paint_set_text_align(sk_paint_t* paint, sk_text_align_t align);
-SK_C_API sk_text_align_t sk_paint_get_text_align(const sk_paint_t* paint);
-SK_C_API void sk_paint_set_text_encoding(sk_paint_t* paint, sk_text_encoding_t encoding);
-SK_C_API sk_text_encoding_t sk_paint_get_text_encoding(const sk_paint_t* paint);
 SK_C_API sk_paint_t* sk_paint_new(void);
 SK_C_API sk_paint_t* sk_paint_clone(sk_paint_t*);
 SK_C_API void sk_paint_delete(sk_paint_t*);

@@ -46,7 +46,10 @@ SK_C_API sk_shader_t* sk_shader_new_two_point_conical_gradient_color4f(const sk_
 
 SK_C_API sk_shader_t* sk_shader_new_perlin_noise_fractal_noise(float baseFrequencyX, float baseFrequencyY, int numOctaves, float seed, const sk_isize_t* tileSize);
 SK_C_API sk_shader_t* sk_shader_new_perlin_noise_turbulence(float baseFrequencyX, float baseFrequencyY, int numOctaves, float seed, const sk_isize_t* tileSize);
-SK_C_API sk_shader_t* sk_shader_new_perlin_noise_improved_noise(float baseFrequencyX, float baseFrequencyY, int numOctaves, float z);
+
+// TODO: find an implementation that exhibits the original behaviour as the one returned by this in Skia M88
+
+//SK_C_API sk_shader_t* sk_shader_new_perlin_noise_improved_noise(float baseFrequencyX, float baseFrequencyY, int numOctaves, float z);
 
 SK_C_PLUS_PLUS_END_GUARD
 

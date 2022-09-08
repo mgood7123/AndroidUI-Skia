@@ -12,6 +12,7 @@
 #include "include/c/sk_codec.h"
 
 #include "src/c/sk_types_priv.h"
+#include "include/core/SkStream.h"
 
 size_t sk_codec_min_buffered_bytes_needed(void) {
     return SkCodec::MinBufferedBytesNeeded();
@@ -120,10 +121,10 @@ int sk_codec_get_repetition_count(sk_codec_t* codec) {
 
 #include "include/codec/SkAndroidCodec.h"
 
-sk_android_codec_t* sk_android_codec_new_from_codec(sk_codec_t* codec, sk_android_codec_exif_orientation_behavior_t behaviour) {
+sk_android_codec_t* sk_android_codec_new_from_codec(sk_codec_t* codec) {
     std::unique_ptr<SkCodec> skcodec(AsCodec(codec));
     return ToAndroidCodec(
-        SkAndroidCodec::MakeFromCodec(std::move(skcodec), (SkAndroidCodec::ExifOrientationBehavior)behaviour).release()
+        SkAndroidCodec::MakeFromCodec(std::move(skcodec)).release()
     );
 }
 

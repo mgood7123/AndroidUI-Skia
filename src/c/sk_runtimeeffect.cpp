@@ -17,8 +17,22 @@
 
 // sk_runtimeeffect_t
 
-sk_runtimeeffect_t* sk_runtimeeffect_make(sk_string_t* sksl, sk_string_t* error) {
-    auto [effect, errorMessage] = SkRuntimeEffect::Make(AsString(*sksl));
+sk_runtimeeffect_t* sk_runtimeeffect_make_for_shader(sk_string_t* sksl, sk_string_t* error) {
+    auto [effect, errorMessage] = SkRuntimeEffect::MakeForShader(AsString(*sksl));
+    if (error && errorMessage.size() > 0)
+        AsString(error)->swap(errorMessage);
+    return ToRuntimeEffect(effect.release());
+}
+
+sk_runtimeeffect_t* sk_runtimeeffect_make_for_color_filter(sk_string_t* sksl, sk_string_t* error) {
+    auto [effect, errorMessage] = SkRuntimeEffect::MakeForColorFilter(AsString(*sksl));
+    if (error && errorMessage.size() > 0)
+        AsString(error)->swap(errorMessage);
+    return ToRuntimeEffect(effect.release());
+}
+
+sk_runtimeeffect_t* sk_runtimeeffect_make_for_blender(sk_string_t* sksl, sk_string_t* error) {
+    auto [effect, errorMessage] = SkRuntimeEffect::MakeForBlender(AsString(*sksl));
     if (error && errorMessage.size() > 0)
         AsString(error)->swap(errorMessage);
     return ToRuntimeEffect(effect.release());
@@ -28,7 +42,7 @@ void sk_runtimeeffect_unref(sk_runtimeeffect_t* effect) {
     SkSafeUnref(AsRuntimeEffect(effect));
 }
 
-sk_shader_t* sk_runtimeeffect_make_shader(sk_runtimeeffect_t* effect, sk_data_t* uniforms, sk_shader_t** children, size_t childCount, const sk_matrix_t* localMatrix, bool isOpaque) {
+sk_shader_t* sk_runtimeeffect_make_shader(sk_runtimeeffect_t* effect, sk_data_t* uniforms, sk_shader_t** children, size_t childCount, const sk_matrix_t* localMatrix) {
     sk_sp<SkShader>* skChildren = new sk_sp<SkShader>[childCount];
     for (int i = 0; i < childCount; i++) {
         skChildren[i] = sk_ref_sp(AsShader(children[i]));
@@ -42,8 +56,7 @@ sk_shader_t* sk_runtimeeffect_make_shader(sk_runtimeeffect_t* effect, sk_data_t*
         sk_ref_sp(AsData(uniforms)),
         skChildren,
         childCount,
-        localMatrix ? &m : nullptr,
-        isOpaque);
+        localMatrix ? &m : nullptr);
 
     delete[] skChildren;
 
@@ -66,18 +79,34 @@ sk_colorfilter_t* sk_runtimeeffect_make_color_filter(sk_runtimeeffect_t* effect,
     return ToColorFilter(shader.release());
 }
 
+sk_blender_t* sk_runtimeeffect_make_blender(sk_runtimeeffect_t* effect, sk_data_t* uniforms, sk_blender_t** children, size_t childCount) {
+    SkRuntimeEffect::ChildPtr* skChildren = new SkRuntimeEffect::ChildPtr[childCount];
+    for (int i = 0; i < childCount; i++) {
+        skChildren[i] = SkRuntimeEffect::ChildPtr(sk_ref_sp(AsBlender(children[i])));
+    }
+
+    sk_sp<SkBlender> shader = AsRuntimeEffect(effect)->makeBlender(
+        sk_ref_sp(AsData(uniforms)),
+        SkSpan<SkRuntimeEffect::ChildPtr>(skChildren, childCount)
+    );
+
+    delete[] skChildren;
+
+    return ToBlender(shader.release());
+}
+
 size_t sk_runtimeeffect_get_uniform_size(const sk_runtimeeffect_t* effect) {
     return AsRuntimeEffect(effect)->uniformSize();
 }
 
 size_t sk_runtimeeffect_get_uniforms_count(const sk_runtimeeffect_t* effect) {
-    return AsRuntimeEffect(effect)->uniforms().count();
+    return AsRuntimeEffect(effect)->uniforms().size();
 }
 
 void sk_runtimeeffect_get_uniform_name(const sk_runtimeeffect_t* effect, int index, sk_string_t* name) {
     auto vector = AsRuntimeEffect(effect)->uniforms();
     auto item = vector.begin() + index;
-    AsString(name)->set(item->fName);
+    AsString(name)->set(item->name.data(), item->name.size());
 }
 
 const sk_runtimeeffect_uniform_t* sk_runtimeeffect_get_uniform_from_index(const sk_runtimeeffect_t* effect, int index) {
@@ -91,19 +120,19 @@ const sk_runtimeeffect_uniform_t* sk_runtimeeffect_get_uniform_from_name(const s
 }
 
 size_t sk_runtimeeffect_get_children_count(const sk_runtimeeffect_t* effect) {
-    return AsRuntimeEffect(effect)->children().count();
+    return AsRuntimeEffect(effect)->children().size();
 }
 
 void sk_runtimeeffect_get_child_name(const sk_runtimeeffect_t* effect, int index, sk_string_t* name) {
     auto vector = AsRuntimeEffect(effect)->children();
     auto item = vector.begin() + index;
-    AsString(name)->set(*item);
+    AsString(name)->set(item->name.data(), item->name.size());
 }
 
 // sk_runtimeeffect_uniform_t
 
 size_t sk_runtimeeffect_uniform_get_offset(const sk_runtimeeffect_uniform_t* variable) {
-    return AsRuntimeEffectUniform(variable)->fOffset;
+    return AsRuntimeEffectUniform(variable)->offset;
 }
 
 size_t sk_runtimeeffect_uniform_get_size_in_bytes(const sk_runtimeeffect_uniform_t* variable) {

@@ -91,12 +91,12 @@ bool sk_image_is_alpha_only(const sk_image_t* image) {
     return AsImage(image)->isAlphaOnly();
 }
 
-sk_shader_t* sk_image_make_shader(const sk_image_t* image, sk_shader_tilemode_t tileX, sk_shader_tilemode_t tileY, const sk_matrix_t* cmatrix) {
+sk_shader_t* sk_image_make_shader(const sk_image_t* image, sk_shader_tilemode_t tileX, sk_shader_tilemode_t tileY, const sk_sampling_options_t* sampling_options, sk_matrix_t* cmatrix) {
     SkMatrix m;
     if (cmatrix) {
         m = AsMatrix(cmatrix);
     }
-    return ToShader(AsImage(image)->makeShader((SkTileMode)tileX, (SkTileMode)tileY, cmatrix ? &m : nullptr).release());
+    return ToShader(AsImage(image)->makeShader((SkTileMode)tileX, (SkTileMode)tileY, *AsSamplingOptions(sampling_options), cmatrix ? &m : nullptr).release());
 }
 
 bool sk_image_peek_pixels(const sk_image_t* image, sk_pixmap_t* pixmap) {
@@ -123,8 +123,8 @@ bool sk_image_read_pixels_into_pixmap(const sk_image_t* image, const sk_pixmap_t
     return AsImage(image)->readPixels(*AsPixmap(dst), srcX, srcY, (SkImage::CachingHint)cachingHint);
 }
 
-bool sk_image_scale_pixels(const sk_image_t* image, const sk_pixmap_t* dst, sk_filter_quality_t quality, sk_image_caching_hint_t cachingHint) {
-    return AsImage(image)->scalePixels(*AsPixmap(dst), (SkFilterQuality)quality, (SkImage::CachingHint)cachingHint);
+bool sk_image_scale_pixels(const sk_image_t* image, const sk_pixmap_t* dst, const sk_sampling_options_t* sampling_options, sk_image_caching_hint_t cachingHint) {
+    return AsImage(image)->scalePixels(*AsPixmap(dst), *AsSamplingOptions(sampling_options), (SkImage::CachingHint)cachingHint);
 }
 
 sk_data_t* sk_image_ref_encoded(const sk_image_t* cimage) {
@@ -156,7 +156,7 @@ sk_image_t* sk_image_make_raster_image(const sk_image_t* cimage) {
 }
 
 sk_image_t* sk_image_make_with_filter_legacy(const sk_image_t* cimage, const sk_imagefilter_t* filter, const sk_irect_t* subset, const sk_irect_t* clipBounds, sk_irect_t* outSubset, sk_ipoint_t* outOffset) {
-    return ToImage(AsImage(cimage)->makeWithFilter(AsImageFilter(filter), *AsIRect(subset), *AsIRect(clipBounds), AsIRect(outSubset), AsIPoint(outOffset)).release());
+    return ToImage(AsImage(cimage)->makeWithFilter(nullptr, AsImageFilter(filter), *AsIRect(subset), *AsIRect(clipBounds), AsIRect(outSubset), AsIPoint(outOffset)).release());
 }
 
 sk_image_t* sk_image_make_with_filter(const sk_image_t* cimage, gr_recording_context_t* context, const sk_imagefilter_t* filter, const sk_irect_t* subset, const sk_irect_t* clipBounds, sk_irect_t* outSubset, sk_ipoint_t* outOffset) {
